@@ -1,65 +1,80 @@
-import Image from "next/image";
+import { getServices, getMission, getIndustries, getCaseStudies, getTechnologyStack, getHeroSection } from "@/lib/contentful";
+import { Hero } from "@/components/sections/Hero";
+import { Mission } from "@/components/sections/Mission";
+import { Services } from "@/components/sections/Services";
+import { Industries } from "@/components/sections/Industries";
+import { TechStack } from "@/components/sections/TechStack";
+import { CaseStudies } from "@/components/sections/CaseStudies";
 
-export default function Home() {
+// Force static generation for optimal performance
+export const dynamic = "force-static";
+export const revalidate = 3600; // Revalidate every hour
+
+export default async function HomePage() {
+  // Fetch all data in parallel for faster loading
+  const [heroSection, mission, services, industries, caseStudies, techStack] = await Promise.all([
+    getHeroSection("Home"),
+    getMission("Home"),
+    getServices(),
+    getIndustries(),
+    getCaseStudies(),
+    getTechnologyStack(),
+  ]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      {/* Structured Data for SEO & LLMs */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Ateed Tech",
+            url: "https://www.ateedtech.com",
+            logo: "https://www.ateedtech.com/logo.png",
+            description:
+              "Custom software development company specializing in web applications, mobile apps, enterprise software, and AI solutions.",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Boynton Beach",
+              addressRegion: "FL",
+              addressCountry: "US",
+            },
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+1-561-462-8333",
+              contactType: "sales",
+            },
+            sameAs: [
+              "https://www.facebook.com/AteedTech/",
+              "https://www.linkedin.com/company/ateedtech",
+              "https://www.youtube.com/@AteedTech",
+              "https://www.instagram.com/ateedtech/",
+            ],
+            hasOfferCatalog: {
+              "@type": "OfferCatalog",
+              name: "Software Development Services",
+              itemListElement: services.map((service: any, index: number) => ({
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: service.fields.title,
+                  description: service.fields.cardText,
+                },
+                position: index + 1,
+              })),
+            },
+          }),
+        }}
+      />
+
+      <Hero data={heroSection[0]} />
+      <Mission data={mission[0]} />
+      <Services data={services} />
+      <Industries data={industries} />
+      <TechStack data={techStack} />
+      <CaseStudies data={caseStudies} />
+    </>
   );
 }

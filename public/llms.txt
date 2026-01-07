@@ -1,0 +1,41 @@
+# Ateed Tech - Custom Software Development Company
+
+## About
+Ateed Tech is a custom software development company based in Boynton Beach, Florida. We specialize in building web applications, mobile apps, enterprise software solutions, and AI-powered systems.
+
+## Services
+- Requirement Definition: Creating comprehensive requirement definitions for custom software development
+- Consulting and Prototyping: Aligning custom software vision with business goals
+- UX/UI Design: Bridging business goals and user needs through intuitive design
+- Web Development: Fully custom websites built from the ground up
+- Mobile App Development: End-to-end iOS, Android, and cross-platform app development
+- Enterprise Software Solutions: Custom enterprise software that streamlines operations
+- API and System Integration: Seamlessly connecting disparate systems and applications
+- AI/ML and Data Engineering: Generative AI, machine learning, and data engineering solutions
+
+## Industries We Serve
+- Retail: Elevating customer experiences and streamlining operations
+- Logistics: Speed, accuracy, and operational efficiency solutions
+- Healthcare: Custom software for clinical workflows and patient experience
+- Manufacturing: Optimizing inventory, supply chains, and production automation
+- Services: Streamlining operations for service providers
+
+## Technology Stack
+- Design: Figma, Adobe XD, Illustrator, Photoshop
+- Frontend: HTML5, CSS3, React, Vue.js, Bootstrap, Tailwind
+- Backend: Java, Python, Node.js, .NET Azure
+- Mobile: React Native, iOS, Android, Flutter
+- Database: SQL, MySQL, PostgreSQL, MongoDB
+- AI & Data Science: TensorFlow, PyTorch, scikit-learn, OpenAI
+
+## Contact
+- Website: https://www.ateedtech.com
+- Phone: +1 (561) 46-Ateed (28333)
+- Email: sales@ateedtech.com
+- Location: Boynton Beach, Florida, USA
+
+## Social Media
+- Facebook: https://www.facebook.com/AteedTech/
+- LinkedIn: https://www.linkedin.com/company/ateedtech
+- YouTube: https://www.youtube.com/@AteedTech
+- Instagram: https://www.instagram.com/ateedtech/

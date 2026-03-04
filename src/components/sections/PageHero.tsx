@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { useGSAP, gsap } from "@/hooks/useGSAP";
 
 interface PageHeroProps {
@@ -32,26 +33,34 @@ export function PageHero({ heading, description, backgroundImage }: PageHeroProp
   return (
     <section
       ref={heroRef}
-      className="relative py-20 md:py-28 bg-slate-900 overflow-hidden"
-      style={
-        backgroundImage
-          ? {
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${backgroundImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }
-          : undefined
-      }
+      className="relative pt-36 md:pt-40 pb-20 md:pb-28 bg-bg-cream overflow-hidden"
     >
       <div className="container mx-auto px-4 lg:px-8">
-        <div ref={contentRef} className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            {heading}
-          </h1>
-          {description && (
-            <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-              {description}
-            </p>
+        <div className="flex flex-col lg:flex-row items-center gap-12">
+          <div ref={contentRef} className={`${backgroundImage ? "lg:w-1/2" : "max-w-3xl mx-auto text-center"}`}>
+            <h1 className="font-serif heading-xl font-normal text-text-primary mb-6">
+              {heading}
+            </h1>
+            {description && (
+              <p className="text-lg md:text-xl text-text-secondary leading-relaxed">
+                {description}
+              </p>
+            )}
+          </div>
+
+          {backgroundImage && (
+            <div className="lg:w-1/2">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-border">
+                <Image
+                  src={backgroundImage}
+                  alt=""
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>

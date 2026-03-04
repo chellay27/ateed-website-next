@@ -5,6 +5,7 @@ import { Services } from "@/components/sections/Services";
 import { Industries } from "@/components/sections/Industries";
 import { TechStack } from "@/components/sections/TechStack";
 import { CaseStudies } from "@/components/sections/CaseStudies";
+import { HomeCTA } from "@/components/sections/HomeCTA";
 
 // Force static generation for optimal performance
 export const dynamic = "force-static";
@@ -75,6 +76,7 @@ export default async function HomePage() {
       <Industries data={industries} />
       <TechStack data={techStack} />
       <CaseStudies data={caseStudies} />
+      <HomeCTA />
     </>
   );
 }

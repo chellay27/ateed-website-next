@@ -47,7 +47,7 @@ export function FeaturedPost({
   return (
     <article
       ref={cardRef}
-      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      className="bg-bg-primary rounded-2xl border border-border overflow-hidden hover:border-text-tertiary transition-colors duration-300"
     >
       <div className="flex flex-col md:flex-row-reverse">
         {/* Image */}
@@ -65,22 +65,22 @@ export function FeaturedPost({
         {/* Content */}
         <div className="md:w-1/2 p-8 flex flex-col justify-between">
           <div>
-            <span className="inline-block bg-gray-100 text-gray-700 text-xs font-semibold uppercase px-3 py-1 rounded-full mb-4">
+            <span className="inline-block bg-bg-cream text-text-secondary text-xs font-semibold uppercase px-3 py-1 rounded-full mb-4">
               Featured
             </span>
 
             <Link href={`/blog/${slug}`}>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 hover:text-blue-600 transition-colors">
+              <h2 className="font-serif text-2xl md:text-3xl font-normal text-text-primary mb-4 hover:text-accent transition-colors">
                 {title}
               </h2>
             </Link>
 
-            <p className="text-gray-600 mb-6">
+            <p className="text-text-secondary mb-6">
               {excerpt}
             </p>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t">
+          <div className="flex items-center justify-between pt-4 border-t border-border">
             <div className="flex items-center gap-3">
               {authorAvatar && (
                 <div className="relative w-10 h-10 rounded-full overflow-hidden">
@@ -92,12 +92,12 @@ export function FeaturedPost({
                   />
                 </div>
               )}
-              <span className="text-sm font-medium text-gray-700 uppercase">
+              <span className="text-sm font-medium text-text-primary uppercase">
                 {authorName}
               </span>
             </div>
 
-            <time className="text-sm text-gray-500">
+            <time className="text-sm text-text-tertiary">
               {publishDate}
             </time>
           </div>

@@ -91,13 +91,13 @@ export function Team({ data }: TeamProps) {
   }
 
   return (
-    <section ref={sectionRef} className="py-16 lg:py-24 bg-gray-50">
+    <section ref={sectionRef} className="py-16 lg:py-24 bg-bg-cream">
       <div className="container mx-auto px-4 lg:px-8">
         <div ref={headingRef} className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ color: "#1689d1" }}>
+          <h2 className="font-serif heading-lg font-normal text-text-primary mb-4">
             Our Team
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
             Meet the talented people behind Ateed Tech.
           </p>
         </div>
@@ -112,7 +112,7 @@ export function Team({ data }: TeamProps) {
             return (
               <div
                 key={member.sys.id}
-                className="team-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                className="team-card bg-bg-primary rounded-2xl border border-border overflow-hidden hover:border-text-tertiary transition-colors duration-300"
               >
                 {imageUrl && (
                   <div className="relative h-72">
@@ -121,14 +121,16 @@ export function Team({ data }: TeamProps) {
                       alt={member.fields.firstName || "Team member"}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      loading="lazy"
                     />
                   </div>
                 )}
                 <div className="p-4 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="font-serif text-lg font-normal text-text-primary">
                     {member.fields.firstName}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-text-secondary">
                     {member.fields.jobTitle}
                   </p>
                 </div>

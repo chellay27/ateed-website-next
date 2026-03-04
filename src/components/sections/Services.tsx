@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
-import { useGSAP, gsap, ScrollTrigger } from "@/hooks/useGSAP";
+import { useGSAP, gsap } from "@/hooks/useGSAP";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 interface Service {
   fields: {
@@ -21,84 +22,84 @@ interface ServicesProps {
 
 export function Services({ data }: ServicesProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    if (!sectionRef.current) return;
+    if (!cardsRef.current) return;
 
-    // Animate heading
+    const cards = cardsRef.current.querySelectorAll(".service-card");
+    if (cards.length === 0) return;
+
     gsap.fromTo(
-      headingRef.current,
-      { opacity: 0, y: 30 },
+      cards,
+      { opacity: 0, y: 40 },
       {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power3.out",
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
+          trigger: cardsRef.current,
+          start: "top 85%",
+          toggleActions: "play none none none",
         },
       }
     );
-
-    // Animate cards with stagger
-    const cards = cardsRef.current?.querySelectorAll(".service-card");
-    if (cards) {
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 80%",
-          },
-        }
-      );
-    }
   }, [data]);
 
   return (
-    <section ref={sectionRef} className="py-16 lg:py-24 bg-gray-50">
+    <section ref={sectionRef} id="services" className="py-24 lg:py-32 bg-bg-primary">
       <div className="container mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <div ref={headingRef} className="flex items-center gap-3 mb-12">
-          <Image
-            src="/logo.png"
-            alt="Ateed Tech"
-            width={32}
-            height={32}
-            className="w-8 h-8"
-          />
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            Our Services
-          </h2>
-        </div>
+        <FadeIn>
+          <SectionHeading eyebrow="What We Do">
+            Services
+          </SectionHeading>
+        </FadeIn>
 
-        {/* Service Cards Grid */}
+        {/* 2-column grid of numbered service cards */}
         <div
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border"
         >
-          {data.map((service) => (
+          {data.map((service, index) => (
             <div
               key={service.sys.id}
-              className="service-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 p-6 group cursor-pointer"
+              className="service-card bg-bg-primary p-8 lg:p-10 group cursor-pointer transition-colors duration-300 hover:bg-bg-cream"
             >
-              <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                {service.fields.title}
-              </h3>
-              <p className="text-gray-600 mb-4 line-clamp-4">
-                {service.fields.cardText}
-              </p>
-              <button className="text-blue-600 font-medium hover:text-blue-700 transition-colors">
-                More details →
-              </button>
+              <div className="flex items-start gap-6">
+                {/* Number */}
+                <span className="text-sm font-mono text-text-tertiary mt-1 flex-shrink-0">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="font-serif heading-sm font-normal text-text-primary group-hover:text-accent transition-colors duration-300">
+                      {service.fields.title}
+                    </h3>
+
+                    {/* Arrow icon that slides on hover */}
+                    <svg
+                      className="w-5 h-5 text-text-tertiary flex-shrink-0 transform transition-transform duration-300 group-hover:translate-x-1 group-hover:text-accent"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      />
+                    </svg>
+                  </div>
+
+                  <p className="text-text-secondary mt-3 leading-relaxed line-clamp-3">
+                    {service.fields.cardText}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>

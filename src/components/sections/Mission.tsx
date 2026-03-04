@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP, gsap, ScrollTrigger } from "@/hooks/useGSAP";
+import { TextReveal } from "@/components/animations/TextReveal";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 interface MissionProps {
   data?: {
@@ -13,55 +13,34 @@ interface MissionProps {
 }
 
 export function Mission({ data }: MissionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const textRef = useRef<HTMLParagraphElement>(null);
-
-  useGSAP(() => {
-    if (!sectionRef.current) return;
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        end: "bottom 20%",
-        toggleActions: "play none none none",
-      },
-    });
-
-    tl.fromTo(
-      headingRef.current,
-      { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 0.8 }
-    ).fromTo(
-      textRef.current,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.8 },
-      "-=0.4"
-    );
-  }, []);
-
   const heading = data?.fields?.heading || "Our Mission";
   const description =
     data?.fields?.description ||
     "At Ateed Tech, we're more than just a custom software development company – we are your dedicated technology partner, committed to bringing your unique vision to life.";
 
   return (
-    <section ref={sectionRef} className="py-16 lg:py-24 bg-white">
+    <section className="py-24 lg:py-32 bg-bg-cream">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2
-            ref={headingRef}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
+        <div className="max-w-4xl mx-auto text-center">
+          <FadeIn>
+            <span className="inline-block text-xs font-medium tracking-[0.2em] uppercase text-accent mb-6">
+              Our Mission
+            </span>
+          </FadeIn>
+
+          <TextReveal
+            as="h2"
+            className="font-serif heading-lg font-normal text-text-primary mb-8"
+            stagger={0.03}
           >
             {heading}
-          </h2>
-          <p
-            ref={textRef}
-            className="text-lg md:text-xl text-gray-600 leading-relaxed"
-          >
-            {description}
-          </p>
+          </TextReveal>
+
+          <FadeIn delay={0.3}>
+            <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-3xl mx-auto">
+              {description}
+            </p>
+          </FadeIn>
         </div>
       </div>
     </section>

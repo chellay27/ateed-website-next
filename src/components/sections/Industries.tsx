@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { useGSAP, gsap } from "@/hooks/useGSAP";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 interface Industry {
   fields: {
@@ -26,47 +28,30 @@ interface IndustriesProps {
 }
 
 export function Industries({ data }: IndustriesProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    if (!sectionRef.current) return;
+    if (!scrollRef.current) return;
 
-    // Animate heading
+    const cards = scrollRef.current.querySelectorAll(".industry-card");
+    if (cards.length === 0) return;
+
     gsap.fromTo(
-      headingRef.current,
-      { opacity: 0, y: 30 },
+      cards,
+      { opacity: 0, y: 40 },
       {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 0.6,
+        stagger: 0.12,
+        ease: "power3.out",
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
+          trigger: scrollRef.current,
+          start: "top 85%",
+          toggleActions: "play none none none",
         },
       }
     );
-
-    // Animate cards with stagger
-    const cards = cardsRef.current?.querySelectorAll(".industry-card");
-    if (cards) {
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.15,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 80%",
-          },
-        }
-      );
-    }
   }, [data]);
 
   const getImageUrl = (industry: Industry) => {
@@ -76,56 +61,57 @@ export function Industries({ data }: IndustriesProps) {
   };
 
   return (
-    <section ref={sectionRef} className="py-16 lg:py-24 bg-gray-100">
+    <section className="py-24 lg:py-32 bg-bg-cream">
       <div className="container mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <div ref={headingRef} className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Industries We Serve
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            We deliver tailored solutions across diverse industries, helping businesses transform and thrive.
-          </p>
-        </div>
+        <FadeIn>
+          <SectionHeading eyebrow="Industries">
+            Sectors we serve
+          </SectionHeading>
+        </FadeIn>
+      </div>
 
-        {/* Industry Cards */}
-        <div ref={cardsRef} className="space-y-8">
-          {data.map((industry, index) => {
-            const imageUrl = getImageUrl(industry);
-            const isEven = index % 2 === 0;
+      {/* Horizontal scroll on desktop */}
+      <div
+        ref={scrollRef}
+        className="flex overflow-x-auto gap-5 px-4 lg:px-8 pb-4 snap-x snap-mandatory scrollbar-hide"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {data.map((industry) => {
+          const imageUrl = getImageUrl(industry);
 
-            return (
-              <div
-                key={industry.sys.id}
-                className="industry-card bg-white rounded-2xl shadow-lg overflow-hidden"
-              >
-                <div className={`flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"}`}>
-                  {/* Image */}
-                  {imageUrl && (
-                    <div className="md:w-1/2 relative h-64 md:h-80">
-                      <Image
-                        src={imageUrl}
-                        alt={industry.fields.industryName || "Industry"}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
+          return (
+            <div
+              key={industry.sys.id}
+              className="industry-card relative flex-shrink-0 w-72 md:w-80 h-96 rounded-2xl overflow-hidden group snap-start"
+            >
+              {/* Background image */}
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={industry.fields.industryName || "Industry"}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="320px"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-bg-dark-secondary" />
+              )}
 
-                  {/* Content */}
-                  <div className="md:w-1/2 p-8 flex flex-col justify-center">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                      {industry.fields.industryName}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                      {industry.fields.description}
-                    </p>
-                  </div>
-                </div>
+              {/* Dark gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+              {/* Content at the bottom */}
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <h3 className="font-serif text-xl font-normal text-white mb-2">
+                  {industry.fields.industryName}
+                </h3>
+                <p className="text-sm text-white/70 leading-relaxed line-clamp-3 opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                  {industry.fields.description}
+                </p>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

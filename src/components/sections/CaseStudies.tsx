@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import { useGSAP, gsap } from "@/hooks/useGSAP";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 interface CaseStudy {
   fields: {
@@ -21,48 +23,27 @@ interface CaseStudiesProps {
 }
 
 export function CaseStudies({ data }: CaseStudiesProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const sliderRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useGSAP(() => {
-    if (!sectionRef.current) return;
+    if (!contentRef.current) return;
 
-    // Animate heading
     gsap.fromTo(
-      headingRef.current,
+      contentRef.current,
       { opacity: 0, y: 30 },
       {
         opacity: 1,
         y: 0,
         duration: 0.8,
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-        },
-      }
-    );
-
-    // Animate slider
-    gsap.fromTo(
-      sliderRef.current,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        scrollTrigger: {
-          trigger: sliderRef.current,
-          start: "top 80%",
+          trigger: contentRef.current,
+          start: "top 85%",
+          toggleActions: "play none none none",
         },
       }
     );
   }, [data]);
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-  };
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % data.length);
@@ -79,95 +60,81 @@ export function CaseStudies({ data }: CaseStudiesProps) {
   const currentStudy = data[currentIndex];
 
   return (
-    <section ref={sectionRef} className="py-16 lg:py-24 bg-white">
+    <section className="py-24 lg:py-32 bg-bg-cream">
       <div className="container mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <div ref={headingRef} className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Case Studies
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover how we&apos;ve helped businesses achieve their goals through innovative solutions.
+        <FadeIn>
+          <SectionHeading eyebrow="Case Studies">
+            Selected work
+          </SectionHeading>
+        </FadeIn>
+
+        {/* Editorial layout */}
+        <div ref={contentRef} className="max-w-4xl">
+          {/* Project name - large serif */}
+          <h3 className="font-serif heading-md font-normal text-text-primary mb-6">
+            {currentStudy.fields.name}
+          </h3>
+
+          {/* Description */}
+          <p className="text-text-secondary text-lg leading-relaxed mb-8 max-w-2xl">
+            {currentStudy.fields.description}
           </p>
-        </div>
 
-        {/* Case Study Slider */}
-        <div ref={sliderRef} className="max-w-4xl mx-auto">
-          <div className="bg-gray-50 rounded-2xl p-8 md:p-12 relative">
-            {/* Navigation Buttons */}
-            {data.length > 1 && (
-              <>
-                <button
-                  onClick={prevSlide}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                  aria-label="Previous case study"
-                >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                  aria-label="Next case study"
-                >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </>
-            )}
-
-            {/* Content */}
-            <div className="text-center px-8">
-              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                {currentStudy.fields.name}
-              </h3>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-                {currentStudy.fields.description}
-              </p>
-
-              {/* Stats */}
-              <div className="flex flex-col sm:flex-row justify-center gap-8 mb-8">
-                {currentStudy.fields.duration && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-500 uppercase mb-1">Duration</h4>
-                    <p className="text-gray-700">{currentStudy.fields.duration}</p>
-                  </div>
-                )}
-                {currentStudy.fields.team && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-500 uppercase mb-1">Team</h4>
-                    <p className="text-gray-700">{currentStudy.fields.team}</p>
-                  </div>
-                )}
+          {/* Stats row */}
+          <div className="flex flex-wrap gap-10 mb-10">
+            {currentStudy.fields.duration && (
+              <div>
+                <span className="block text-xs font-medium tracking-[0.15em] uppercase text-text-tertiary mb-1">
+                  Duration
+                </span>
+                <span className="text-text-primary font-medium">
+                  {currentStudy.fields.duration}
+                </span>
               </div>
-
-              {/* Client Feedback */}
-              {currentStudy.fields.clientFeedback && (
-                <div className="border-t pt-6">
-                  <h4 className="text-sm font-semibold text-gray-500 uppercase mb-3">Client Feedback</h4>
-                  <p className="text-gray-600 italic">&ldquo;{currentStudy.fields.clientFeedback}&rdquo;</p>
-                </div>
-              )}
-            </div>
-
-            {/* Dots */}
-            {data.length > 1 && (
-              <div className="flex justify-center gap-2 mt-8">
-                {data.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-colors ${
-                      index === currentIndex ? "bg-blue-600" : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
+            )}
+            {currentStudy.fields.team && (
+              <div>
+                <span className="block text-xs font-medium tracking-[0.15em] uppercase text-text-tertiary mb-1">
+                  Team
+                </span>
+                <span className="text-text-primary font-medium">
+                  {currentStudy.fields.team}
+                </span>
               </div>
             )}
           </div>
+
+          {/* Client feedback as blockquote with accent left border */}
+          {currentStudy.fields.clientFeedback && (
+            <blockquote className="border-l-2 border-accent pl-6 py-2 mb-10">
+              <p className="text-text-secondary italic text-lg leading-relaxed">
+                &ldquo;{currentStudy.fields.clientFeedback}&rdquo;
+              </p>
+            </blockquote>
+          )}
+
+          {/* Text-based prev/next pagination */}
+          {data.length > 1 && (
+            <div className="flex items-center gap-6 pt-6 border-t border-border">
+              <button
+                onClick={prevSlide}
+                className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                aria-label="Previous case study"
+              >
+                &larr; Prev
+              </button>
+              <span className="text-sm text-text-tertiary">
+                {currentIndex + 1} / {data.length}
+              </span>
+              <button
+                onClick={nextSlide}
+                className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+                aria-label="Next case study"
+              >
+                Next &rarr;
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>

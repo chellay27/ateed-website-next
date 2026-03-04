@@ -65,12 +65,12 @@ export default async function BlogPage() {
         backgroundImage={backgroundImage}
       />
 
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-16 lg:py-24 bg-bg-primary">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Featured Post */}
           {featuredPost && (
             <div className="mb-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured</h2>
+              <h2 className="font-serif text-2xl font-normal text-text-primary mb-8">Featured</h2>
               {(() => {
                 const author = getAuthor(featuredPost);
                 const authorName = author?.fields?.name || "Anonymous";
@@ -95,8 +95,8 @@ export default async function BlogPage() {
 
           {/* Latest Stories */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Latest Stories</h2>
-            <p className="text-gray-600 mb-8">Here&apos;s what we&apos;ve been up to recently.</p>
+            <h2 className="font-serif text-2xl font-normal text-text-primary mb-4">Latest Stories</h2>
+            <p className="text-text-secondary mb-8">Here&apos;s what we&apos;ve been up to recently.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {regularPosts.map((post: any) => {
@@ -124,7 +124,7 @@ export default async function BlogPage() {
 
             {posts.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-gray-500">No blog posts found. Check back soon!</p>
+                <p className="text-text-tertiary">No blog posts found. Check back soon!</p>
               </div>
             )}
           </div>

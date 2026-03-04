@@ -25,7 +25,7 @@ export function BlogCard({
   featured,
 }: BlogCardProps) {
   return (
-    <article className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
+    <article className="bg-bg-primary rounded-2xl border border-border overflow-hidden hover:border-text-tertiary transition-colors duration-300 flex flex-col h-full">
       {imageUrl && (
         <Link href={`/blog/${slug}`} className="relative h-52 block overflow-hidden">
           <Image
@@ -44,16 +44,16 @@ export function BlogCard({
 
       <div className="p-6 flex flex-col flex-grow">
         <Link href={`/blog/${slug}`}>
-          <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-blue-600 transition-colors line-clamp-2">
+          <h3 className="font-serif text-xl font-normal text-text-primary mb-3 hover:text-accent transition-colors line-clamp-2">
             {title}
           </h3>
         </Link>
 
-        <p className="text-gray-600 mb-4 line-clamp-3 flex-grow">
+        <p className="text-text-secondary mb-4 line-clamp-3 flex-grow">
           {excerpt}
         </p>
 
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex items-center justify-between pt-4 border-t border-border">
           <div className="flex items-center gap-2">
             {authorAvatar && (
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
@@ -65,12 +65,12 @@ export function BlogCard({
                 />
               </div>
             )}
-            <span className="text-sm font-medium text-gray-700 uppercase">
+            <span className="text-sm font-medium text-text-primary uppercase">
               {authorName}
             </span>
           </div>
 
-          <time className="text-sm text-gray-500">
+          <time className="text-sm text-text-tertiary">
             {publishDate}
           </time>
         </div>

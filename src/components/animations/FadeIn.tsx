@@ -8,7 +8,9 @@ interface FadeInProps {
   className?: string;
   delay?: number;
   y?: number;
+  x?: number;
   duration?: number;
+  direction?: "up" | "down" | "left" | "right";
   as?: ElementType;
 }
 
@@ -19,13 +21,15 @@ export function FadeIn({
   children,
   className = "",
   delay = 0,
-  y = 50,
+  y,
+  x,
   duration = 0.8,
+  direction = "up",
   as: Component = "div",
 }: FadeInProps) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useFadeIn(ref, { y, duration, delay });
+  useFadeIn(ref, { y, x, duration, delay, direction });
 
   return (
     <Component ref={ref as any} className={className}>

@@ -6,6 +6,15 @@ const contentful = createClient({
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN!,
 });
 
+// In-memory cache to avoid redundant Contentful API calls in dev mode.
+// In production, Next.js static generation handles caching via revalidate.
+const cache = new Map<string, { data: unknown; expiry: number }>();
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+function getCacheKey(contentType: string, options?: Record<string, unknown>): string {
+  return `${contentType}:${JSON.stringify(options ?? {})}`;
+}
+
 // Type-safe fetch helpers
 export async function getEntries<T extends EntrySkeletonType>(
   contentType: string,
@@ -16,10 +25,20 @@ export async function getEntries<T extends EntrySkeletonType>(
     [key: string]: unknown;
   }
 ) {
+  const key = getCacheKey(contentType, options);
+  const now = Date.now();
+  const cached = cache.get(key);
+
+  if (cached && now < cached.expiry) {
+    return cached.data as Awaited<ReturnType<typeof contentful.getEntries<T>>>;
+  }
+
   const response = await contentful.getEntries<T>({
     content_type: contentType,
     ...options,
   });
+
+  cache.set(key, { data: response, expiry: now + CACHE_TTL_MS });
   return response;
 }
 

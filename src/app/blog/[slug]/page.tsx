@@ -48,22 +48,22 @@ const richTextOptions = {
     [MARKS.BOLD]: (text: any) => `<strong>${text}</strong>`,
     [MARKS.ITALIC]: (text: any) => `<em>${text}</em>`,
     [MARKS.UNDERLINE]: (text: any) => `<u>${text}</u>`,
-    [MARKS.CODE]: (text: any) => `<code class="bg-gray-100 px-1 rounded">${text}</code>`,
+    [MARKS.CODE]: (text: any) => `<code class="bg-[#F5F0EB] px-1 rounded">${text}</code>`,
   },
   renderNode: {
-    [BLOCKS.PARAGRAPH]: (node: any, next: any) => `<p class="mb-6 text-gray-700 leading-relaxed">${next(node.content)}</p>`,
-    [BLOCKS.HEADING_1]: (node: any, next: any) => `<h1 class="text-4xl font-bold mb-6 mt-8">${next(node.content)}</h1>`,
-    [BLOCKS.HEADING_2]: (node: any, next: any) => `<h2 class="text-3xl font-bold mb-4 mt-8">${next(node.content)}</h2>`,
-    [BLOCKS.HEADING_3]: (node: any, next: any) => `<h3 class="text-2xl font-bold mb-4 mt-6">${next(node.content)}</h3>`,
-    [BLOCKS.HEADING_4]: (node: any, next: any) => `<h4 class="text-xl font-bold mb-3 mt-4">${next(node.content)}</h4>`,
-    [BLOCKS.HEADING_5]: (node: any, next: any) => `<h5 class="text-lg font-bold mb-2 mt-4">${next(node.content)}</h5>`,
-    [BLOCKS.HEADING_6]: (node: any, next: any) => `<h6 class="text-base font-bold mb-2 mt-4">${next(node.content)}</h6>`,
+    [BLOCKS.PARAGRAPH]: (node: any, next: any) => `<p class="mb-6 text-[#78716C] leading-relaxed">${next(node.content)}</p>`,
+    [BLOCKS.HEADING_1]: (node: any, next: any) => `<h1 class="font-serif text-4xl font-normal mb-6 mt-8 text-[#1C1917]">${next(node.content)}</h1>`,
+    [BLOCKS.HEADING_2]: (node: any, next: any) => `<h2 class="font-serif text-3xl font-normal mb-4 mt-8 text-[#1C1917]">${next(node.content)}</h2>`,
+    [BLOCKS.HEADING_3]: (node: any, next: any) => `<h3 class="font-serif text-2xl font-normal mb-4 mt-6 text-[#1C1917]">${next(node.content)}</h3>`,
+    [BLOCKS.HEADING_4]: (node: any, next: any) => `<h4 class="font-serif text-xl font-normal mb-3 mt-4 text-[#1C1917]">${next(node.content)}</h4>`,
+    [BLOCKS.HEADING_5]: (node: any, next: any) => `<h5 class="font-serif text-lg font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h5>`,
+    [BLOCKS.HEADING_6]: (node: any, next: any) => `<h6 class="font-serif text-base font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h6>`,
     [BLOCKS.UL_LIST]: (node: any, next: any) => `<ul class="list-disc list-inside mb-6 space-y-2">${next(node.content)}</ul>`,
     [BLOCKS.OL_LIST]: (node: any, next: any) => `<ol class="list-decimal list-inside mb-6 space-y-2">${next(node.content)}</ol>`,
-    [BLOCKS.LIST_ITEM]: (node: any, next: any) => `<li class="text-gray-700">${next(node.content)}</li>`,
+    [BLOCKS.LIST_ITEM]: (node: any, next: any) => `<li class="text-[#78716C]">${next(node.content)}</li>`,
     [BLOCKS.QUOTE]: (node: any, next: any) =>
-      `<blockquote class="border-l-4 border-blue-500 pl-6 py-2 my-6 italic text-gray-600">${next(node.content)}</blockquote>`,
-    [BLOCKS.HR]: () => `<hr class="my-8 border-gray-200" />`,
+      `<blockquote class="border-l-4 border-[#C2410C] pl-6 py-2 my-6 italic text-[#78716C]">${next(node.content)}</blockquote>`,
+    [BLOCKS.HR]: () => `<hr class="my-8 border-[#E7E5E4]" />`,
     [BLOCKS.EMBEDDED_ASSET]: (node: any) => {
       const { title, description, file } = node.data?.target?.fields || {};
       const imageUrl = file?.url;
@@ -72,13 +72,13 @@ const richTextOptions = {
       return `
         <figure class="my-8">
           <img src="${fullUrl}" alt="${description || title || "Blog image"}" class="rounded-lg w-full" />
-          ${description ? `<figcaption class="text-center text-sm text-gray-500 mt-2">${description}</figcaption>` : ""}
+          ${description ? `<figcaption class="text-center text-sm text-[#A8A29E] mt-2">${description}</figcaption>` : ""}
         </figure>
       `;
     },
     [INLINES.HYPERLINK]: (node: any, next: any) => {
       const href = node.data.uri;
-      return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${next(node.content)}</a>`;
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-[#C2410C] hover:text-[#9A3412] hover:underline">${next(node.content)}</a>`;
     },
   },
 };
@@ -170,21 +170,21 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         }}
       />
 
-      <article className="py-12 lg:py-20">
+      <article className="pt-28 lg:pt-36 pb-12 lg:pb-20 bg-bg-primary">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Header */}
           <header className="max-w-4xl mx-auto text-center mb-12">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="font-serif heading-xl font-normal text-text-primary mb-6">
               {post.fields.title}
             </h1>
 
             {post.fields.excerpt && (
-              <p className="text-xl text-gray-600 mb-8">
+              <p className="text-xl text-text-secondary mb-8">
                 {post.fields.excerpt}
               </p>
             )}
 
-            <time className="text-gray-500 block mb-6">{publishDate}</time>
+            <time className="text-text-tertiary block mb-6">{publishDate}</time>
 
             {/* Author Info */}
             <div className="flex items-center justify-center gap-4">
@@ -205,33 +205,33 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                       href={linkedInLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-gray-900 hover:text-blue-600"
+                      className="font-semibold text-text-primary hover:text-accent"
                     >
                       {authorName}
                     </a>
                   ) : (
-                    <span className="font-semibold text-gray-900">{authorName}</span>
+                    <span className="font-semibold text-text-primary">{authorName}</span>
                   )}
                   {linkedInLink && (
                     <a href={linkedInLink} target="_blank" rel="noopener noreferrer">
-                      <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                       </svg>
                     </a>
                   )}
                 </div>
-                <p className="text-sm text-gray-500">{authorTitle}</p>
+                <p className="text-sm text-text-tertiary">{authorTitle}</p>
               </div>
             </div>
 
             {/* Share Buttons */}
             <div className="flex items-center justify-center gap-4 mt-6">
-              <span className="text-sm text-gray-500">Share:</span>
+              <span className="text-sm text-text-tertiary">Share:</span>
               <a
                 href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://www.ateedtech.com/blog/${slug}`)}&text=${encodeURIComponent(post.fields.title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-blue-400"
+                className="text-text-tertiary hover:text-accent"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
@@ -241,7 +241,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://www.ateedtech.com/blog/${slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-blue-600"
+                className="text-text-tertiary hover:text-accent"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -251,7 +251,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://www.ateedtech.com/blog/${slug}`)}&title=${encodeURIComponent(post.fields.title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-blue-700"
+                className="text-text-tertiary hover:text-accent"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
@@ -263,7 +263,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {/* Hero Image */}
           {heroImageUrl && (
             <figure className="max-w-4xl mx-auto mb-12">
-              <div className="relative aspect-video rounded-xl overflow-hidden">
+              <div className="relative aspect-video rounded-2xl overflow-hidden border border-border">
                 <Image
                   src={heroImageUrl}
                   alt={post.fields.title}
@@ -273,7 +273,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 />
               </div>
               {post.fields.heroImage?.fields?.description && (
-                <figcaption className="text-center text-sm text-gray-500 mt-3">
+                <figcaption className="text-center text-sm text-text-tertiary mt-3">
                   {post.fields.heroImage.fields.description}
                 </figcaption>
               )}
@@ -288,8 +288,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* Related Posts */}
           {relatedPosts.length > 0 && (
-            <section className="max-w-6xl mx-auto mt-16 pt-12 border-t">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">Latest Stories</h2>
+            <section className="max-w-6xl mx-auto mt-16 pt-12 border-t border-border">
+              <h2 className="font-serif text-2xl font-normal text-text-primary mb-8">Latest Stories</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost: any) => {
                   const relatedAuthorId = relatedPost.fields.author?.sys?.id;
@@ -302,7 +302,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   const relatedDate = formatDate(relatedPost.fields.publishDate || relatedPost.sys.createdAt);
 
                   return (
-                    <article key={relatedPost.sys.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <article key={relatedPost.sys.id} className="bg-bg-primary rounded-2xl border border-border overflow-hidden hover:border-text-tertiary transition-colors duration-300">
                       {relatedImageUrl && (
                         <Link href={`/blog/${getSlug(relatedPost.fields.title)}`} className="relative h-48 block">
                           <Image
@@ -315,11 +315,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                       )}
                       <div className="p-6">
                         <Link href={`/blog/${getSlug(relatedPost.fields.title)}`}>
-                          <h3 className="font-bold text-gray-900 mb-2 hover:text-blue-600 line-clamp-2">
+                          <h3 className="font-serif font-normal text-text-primary mb-2 hover:text-accent transition-colors line-clamp-2">
                             {relatedPost.fields.title}
                           </h3>
                         </Link>
-                        <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                        <p className="text-sm text-text-secondary line-clamp-3 mb-4">
                           {relatedPost.fields.excerpt}
                         </p>
                         <div className="flex items-center justify-between text-sm">
@@ -334,9 +334,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                                 />
                               </div>
                             )}
-                            <span className="text-gray-700">{relatedAuthorName}</span>
+                            <span className="text-text-primary">{relatedAuthorName}</span>
                           </div>
-                          <time className="text-gray-500">{relatedDate}</time>
+                          <time className="text-text-tertiary">{relatedDate}</time>
                         </div>
                       </div>
                     </article>

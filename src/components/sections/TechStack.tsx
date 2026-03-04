@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useGSAP, gsap } from "@/hooks/useGSAP";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FadeIn } from "@/components/animations/FadeIn";
@@ -23,6 +23,71 @@ const FALLBACK_COLORS = [
   "#E8762D",
   "#DB2777",
 ];
+
+// Devicon CDN base
+const CDN = "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons";
+
+// Map every tech item to its devicon path
+const TECH_LOGOS: Record<string, string> = {
+  // Design
+  Figma: `${CDN}/figma/figma-original.svg`,
+  "Adobe XD": `${CDN}/xd/xd-original.svg`,
+  Illustrator: `${CDN}/illustrator/illustrator-plain.svg`,
+  Photoshop: `${CDN}/photoshop/photoshop-plain.svg`,
+  // Frontend
+  "HTML5 & CSS3": `${CDN}/html5/html5-original.svg`,
+  React: `${CDN}/react/react-original.svg`,
+  "Vue.js": `${CDN}/vuejs/vuejs-original.svg`,
+  "Bootstrap & Tailwind": `${CDN}/tailwindcss/tailwindcss-original.svg`,
+  // Backend
+  Java: `${CDN}/java/java-original.svg`,
+  Python: `${CDN}/python/python-original.svg`,
+  "Node.js": `${CDN}/nodejs/nodejs-original.svg`,
+  ".net Azure": `${CDN}/azure/azure-original.svg`,
+  // Mobile
+  "React Native": `${CDN}/react/react-original.svg`,
+  iOS: `${CDN}/apple/apple-original.svg`,
+  Android: `${CDN}/android/android-original.svg`,
+  Flutter: `${CDN}/flutter/flutter-original.svg`,
+  // Database
+  SQL: `${CDN}/azuresqldatabase/azuresqldatabase-original.svg`,
+  MySQL: `${CDN}/mysql/mysql-original.svg`,
+  PostgreSQL: `${CDN}/postgresql/postgresql-original.svg`,
+  MongoDB: `${CDN}/mongodb/mongodb-original.svg`,
+  // AI & Data Science
+  TensorFlow: `${CDN}/tensorflow/tensorflow-original.svg`,
+  PyTorch: `${CDN}/pytorch/pytorch-original.svg`,
+  "scikit-learn": `${CDN}/scikitlearn/scikitlearn-original.svg`,
+  OpenAI: "/logos/openai.svg",
+};
+
+/* Small logo with accent-dot fallback if image fails */
+function TechLogo({ name, accent }: { name: string; accent: string }) {
+  const [failed, setFailed] = useState(false);
+  const url = TECH_LOGOS[name];
+
+  if (!url || failed) {
+    return (
+      <span
+        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+        style={{ backgroundColor: accent }}
+      />
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={url}
+      alt=""
+      width={20}
+      height={20}
+      loading="lazy"
+      className="w-5 h-5 flex-shrink-0 object-contain"
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 interface TechStackItem {
   fields: {
@@ -131,17 +196,14 @@ export function TechStack({ data }: TechStackProps) {
                   />
                 </div>
 
-                {/* Tech items */}
-                <ul className="space-y-2.5 relative">
+                {/* Tech items with logos */}
+                <ul className="space-y-3 relative">
                   {techStack.fields.stackList?.map((item, i) => (
                     <li
                       key={i}
                       className="flex items-center gap-3 text-text-secondary text-sm"
                     >
-                      <span
-                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: accent }}
-                      />
+                      <TechLogo name={item} accent={accent} />
                       {item}
                     </li>
                   ))}

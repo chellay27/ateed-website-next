@@ -25,13 +25,14 @@ export function Mission({ data }: MissionProps) {
   const quoteRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Blue background grows outward from center
+    // Blue background grows outward from center — scrubbed to scroll position
     if (bgRef.current && sectionRef.current) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
+          start: "top 50%",
+          end: "bottom bottom",
+          scrub: 0.8,
         },
       });
 
@@ -41,18 +42,17 @@ export function Mission({ data }: MissionProps) {
         {
           scale: 1.5,
           opacity: 1,
-          duration: 1.8,
           ease: "power2.out",
-        }
+        },
+        0
       ).to(bgRef.current, {
         borderRadius: "0%",
         scale: 1,
-        duration: 0.7,
         ease: "power1.inOut",
       });
     }
 
-    // Decorative quote mark drift
+    // Decorative quote mark drift — also scrubbed
     if (quoteRef.current) {
       gsap.fromTo(
         quoteRef.current,
@@ -61,12 +61,12 @@ export function Mission({ data }: MissionProps) {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 1.4,
           ease: "power2.out",
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 75%",
-            toggleActions: "play none none none",
+            start: "top 80%",
+            end: "center center",
+            scrub: 0.6,
           },
         }
       );

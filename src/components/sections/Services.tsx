@@ -74,14 +74,14 @@ export function Services({ data }: ServicesProps) {
         {/* 2-column grid of numbered service cards */}
         <div
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 gap-px"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5"
         >
           {data.map((service, index) => {
             const color = SERVICE_COLORS[index % SERVICE_COLORS.length];
             return (
             <div
               key={service.sys.id}
-              className="service-card bg-bg-primary p-6 lg:p-8 group transition-all duration-300"
+              className="service-card bg-white border border-black/[0.06] p-6 lg:p-8 group transition-all duration-300 rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:-translate-y-0.5"
               style={{
                 // CSS custom property for this card's accent
                 "--card-accent": color,
@@ -124,7 +124,7 @@ export function Services({ data }: ServicesProps) {
           })}
           {/* CTA in the empty cell when odd number of services */}
           {data.length % 2 !== 0 && (
-            <div className="hidden md:flex bg-bg-primary p-6 lg:p-8 flex-col items-center justify-center text-center">
+            <div className="hidden md:flex p-6 lg:p-8 flex-col items-center justify-center text-center">
               <p className="text-text-secondary mb-4">Have a project in mind?</p>
               <Button variant="primary" href="/contact">
                 Let&apos;s Discuss Your Project

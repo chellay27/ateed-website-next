@@ -5,6 +5,25 @@ import { useGSAP, gsap } from "@/hooks/useGSAP";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FadeIn } from "@/components/animations/FadeIn";
 
+// Per-category accent colors
+const CATEGORY_COLORS: Record<string, string> = {
+  Design: "#3B8DD6",
+  Frontend: "#0891B2",
+  Backend: "#7C3AED",
+  Mobile: "#059669",
+  Database: "#E8762D",
+  "AI & Data Science": "#DB2777",
+};
+
+const FALLBACK_COLORS = [
+  "#3B8DD6",
+  "#0891B2",
+  "#7C3AED",
+  "#059669",
+  "#E8762D",
+  "#DB2777",
+];
+
 interface TechStackItem {
   fields: {
     title?: string;
@@ -21,25 +40,25 @@ interface TechStackProps {
 
 export function TechStack({ data }: TechStackProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const clustersRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    if (!clustersRef.current) return;
+    if (!gridRef.current) return;
 
-    const clusters = clustersRef.current.querySelectorAll(".tech-cluster");
-    if (clusters.length === 0) return;
+    const cards = gridRef.current.querySelectorAll(".tech-card");
+    if (cards.length === 0) return;
 
     gsap.fromTo(
-      clusters,
-      { opacity: 0, y: 30 },
+      cards,
+      { opacity: 0, y: 50 },
       {
         opacity: 1,
         y: 0,
-        duration: 0.6,
+        duration: 0.7,
         stagger: 0.1,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: clustersRef.current,
+          trigger: gridRef.current,
           start: "top 85%",
           toggleActions: "play none none none",
         },
@@ -51,30 +70,85 @@ export function TechStack({ data }: TechStackProps) {
     <section ref={sectionRef} className="py-24 lg:py-32 bg-bg-primary">
       <div className="container mx-auto px-4 lg:px-8">
         <FadeIn>
-          <SectionHeading eyebrow="Technology">
-            Our stack
-          </SectionHeading>
+          <SectionHeading eyebrow="Technology">Our stack</SectionHeading>
         </FadeIn>
 
-        {/* Tech clusters as pill/tag groups */}
-        <div ref={clustersRef} className="space-y-12">
-          {data.map((techStack) => (
-            <div key={techStack.sys.id} className="tech-cluster">
-              <h3 className="font-serif heading-sm font-normal text-text-primary mb-5">
-                {techStack.fields.title}
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {techStack.fields.stackList?.map((item, index) => (
-                  <span
-                    key={index}
-                    className="inline-block rounded-full border border-border px-4 py-2 text-sm text-text-secondary transition-colors duration-300 hover:border-accent hover:text-text-primary"
-                  >
-                    {item}
-                  </span>
-                ))}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+        >
+          {data.map((techStack, index) => {
+            const title = techStack.fields.title || "";
+            const accent =
+              CATEGORY_COLORS[title] ||
+              FALLBACK_COLORS[index % FALLBACK_COLORS.length];
+
+            return (
+              <div
+                key={techStack.sys.id}
+                className="tech-card group relative rounded-2xl p-6 lg:p-8 transition-all duration-300 overflow-hidden"
+                style={
+                  {
+                    "--card-accent": accent,
+                    background: `linear-gradient(145deg, ${accent}08 0%, rgba(255,255,255,0.65) 40%, ${accent}05 100%)`,
+                    backdropFilter: "blur(16px)",
+                    WebkitBackdropFilter: "blur(16px)",
+                    border: "1px solid rgba(59,141,214,0.08)",
+                    boxShadow:
+                      "0 4px 24px rgba(30,80,160,0.04), 0 1px 3px rgba(0,0,0,0.02)",
+                  } as React.CSSProperties
+                }
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget;
+                  el.style.transform = "translateY(-6px)";
+                  el.style.boxShadow = `0 16px 48px ${accent}18, 0 4px 12px rgba(0,0,0,0.06)`;
+                  el.style.borderColor = `${accent}25`;
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget;
+                  el.style.transform = "";
+                  el.style.boxShadow =
+                    "0 4px 24px rgba(30,80,160,0.04), 0 1px 3px rgba(0,0,0,0.02)";
+                  el.style.borderColor = "rgba(59,141,214,0.08)";
+                }}
+              >
+                {/* Decorative radial glow in top-right corner */}
+                <div
+                  className="absolute -top-10 -right-10 w-36 h-36 rounded-full opacity-[0.06] group-hover:opacity-[0.12] transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle, ${accent} 0%, transparent 70%)`,
+                  }}
+                />
+
+                {/* Category heading + accent line */}
+                <div className="w-fit mb-5 relative">
+                  <h3 className="font-serif heading-sm font-normal text-text-primary transition-colors duration-300 group-hover:text-[var(--card-accent)]">
+                    {title}
+                  </h3>
+                  <div
+                    className="w-8 h-[2px] rounded-full group-hover:w-full transition-all duration-500 mt-2"
+                    style={{ backgroundColor: accent }}
+                  />
+                </div>
+
+                {/* Tech items */}
+                <ul className="space-y-2.5 relative">
+                  {techStack.fields.stackList?.map((item, i) => (
+                    <li
+                      key={i}
+                      className="flex items-center gap-3 text-text-secondary text-sm"
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: accent }}
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

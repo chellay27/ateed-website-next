@@ -1,20 +1,10 @@
 "use client";
 
 import { useRef, useEffect, useCallback } from "react";
-import { useGSAP, gsap } from "@/hooks/useGSAP";
+import { useGSAP, gsap, ScrollTrigger } from "@/hooks/useGSAP";
 import { TextReveal } from "@/components/animations/TextReveal";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
-
-// Code lines that "type" out in the editor
-const CODE_LINES = [
-  { indent: 0, text: 'function buildYourVision() {', color: '#60A5FA' },
-  { indent: 1, text: 'const idea = getYourRequirements();', color: '#A5B4FC' },
-  { indent: 1, text: 'const design = craftUI(idea);', color: '#A5B4FC' },
-  { indent: 1, text: 'const app = develop(design);', color: '#A5B4FC' },
-  { indent: 1, text: 'return deploy(app);', color: '#34D399' },
-  { indent: 0, text: '}', color: '#60A5FA' },
-];
 
 interface HeroProps {
   data?: {
@@ -34,44 +24,45 @@ interface HeroProps {
 export function Hero({ data }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const artRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<HTMLDivElement>(null);
-  const perspectiveRef = useRef<HTMLDivElement>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const linesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Mouse-tracking 3D tilt
+  // Mouse parallax for floating cards
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!perspectiveRef.current || !editorRef.current) return;
-
-    const rect = perspectiveRef.current.getBoundingClientRect();
+    if (!cardsContainerRef.current) return;
+    const rect = cardsContainerRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
+    const moveX = (e.clientX - centerX) / rect.width;
+    const moveY = (e.clientY - centerY) / rect.height;
 
-    // Calculate rotation based on mouse distance from center
-    const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 8;
-    const rotateX = ((centerY - e.clientY) / (rect.height / 2)) * 5;
-
-    gsap.to(editorRef.current, {
-      rotateY,
-      rotateX,
-      duration: 0.6,
-      ease: "power2.out",
+    const cards = cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
+    cards.forEach((card) => {
+      const depth = parseFloat(card.dataset.depth || "1");
+      gsap.to(card, {
+        x: moveX * 14 * depth,
+        y: moveY * 10 * depth,
+        duration: 1,
+        ease: "power2.out",
+      });
     });
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    if (!editorRef.current) return;
-    gsap.to(editorRef.current, {
-      rotateY: 0,
-      rotateX: 0,
-      duration: 0.8,
-      ease: "power2.out",
+    if (!cardsContainerRef.current) return;
+    const cards = cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
+    cards.forEach((card) => {
+      gsap.to(card, {
+        x: 0,
+        y: 0,
+        duration: 1.2,
+        ease: "power2.out",
+      });
     });
   }, []);
 
   useEffect(() => {
-    const el = perspectiveRef.current;
+    const el = cardsContainerRef.current;
     if (!el) return;
     el.addEventListener("mousemove", handleMouseMove);
     el.addEventListener("mouseleave", handleMouseLeave);
@@ -107,61 +98,41 @@ export function Hero({ data }: HeroProps) {
       });
     }
 
-    // Editor entrance
-    if (editorRef.current) {
+    // Staggered card entrance
+    if (cardsContainerRef.current) {
+      const cards = cardsContainerRef.current.querySelectorAll(".hero-card");
       gsap.fromTo(
-        editorRef.current,
-        { y: 40, opacity: 0, rotateX: 10 },
-        { y: 0, opacity: 1, rotateX: 0, duration: 1.2, ease: "power3.out", delay: 0.6 }
+        cards,
+        { y: 60, opacity: 0, scale: 0.9 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.12,
+          delay: 0.8,
+        }
       );
     }
 
-    // Typing animation — each line types in with stagger
-    const masterTl = gsap.timeline({ delay: 1.2 });
-
-    linesRef.current.forEach((lineEl, i) => {
-      if (!lineEl) return;
-      const textSpan = lineEl.querySelector(".code-text") as HTMLElement;
-      if (!textSpan) return;
-
-      const fullText = textSpan.dataset.text || "";
-      textSpan.textContent = "";
-
-      masterTl.to(textSpan, {
-        duration: fullText.length * 0.04,
-        ease: "none",
-        onUpdate: function () {
-          const progress = this.progress();
-          const chars = Math.floor(progress * fullText.length);
-          textSpan.textContent = fullText.substring(0, chars);
-        },
-      }, i === 0 ? ">" : ">-0.1");
-    });
-
-    // Blinking cursor
-    if (cursorRef.current) {
-      gsap.to(cursorRef.current, {
-        opacity: 0,
-        duration: 0.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "steps(1)",
-        delay: 1.2,
+    // Scroll parallax — cards race upward faster than the page
+    if (cardsContainerRef.current && containerRef.current) {
+      const cards = cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
+      cards.forEach((card) => {
+        const depth = parseFloat(card.dataset.depth || "1");
+        gsap.to(card, {
+          y: -220 * depth,
+          ease: "none",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.5,
+          },
+        });
       });
     }
-
-    // After typing completes, pause then restart
-    masterTl.to({}, { duration: 3 }); // hold
-    masterTl.call(() => {
-      // Fade out lines, then re-type
-      linesRef.current.forEach((lineEl) => {
-        if (!lineEl) return;
-        const textSpan = lineEl.querySelector(".code-text") as HTMLElement;
-        if (textSpan) textSpan.textContent = "";
-      });
-      // Re-run the typing after a beat
-      setTimeout(() => masterTl.restart(), 800);
-    });
 
     // Scroll indicator
     if (scrollRef.current) {
@@ -297,8 +268,8 @@ export function Hero({ data }: HeroProps) {
 
             <FadeIn delay={0.6}>
               <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-xl mb-8">
-                We are your dedicated technology partner, committed to bringing
-                your unique vision to life through elegant, purposeful software.
+                From concept to code — we build custom web apps, mobile
+                platforms, and AI solutions that scale with your ambitions.
               </p>
             </FadeIn>
 
@@ -314,70 +285,267 @@ export function Hero({ data }: HeroProps) {
             </FadeIn>
           </div>
 
-          {/* Right: 3D interactive code editor */}
+          {/* Right: Floating UI component cards */}
           <div
-            ref={perspectiveRef}
-            className="hidden md:block flex-shrink-0"
+            ref={cardsContainerRef}
+            className="hidden md:block flex-shrink-0 relative"
             style={{
               perspective: "1200px",
-              width: "clamp(320px, 32vw, 480px)",
+              width: "clamp(340px, 34vw, 500px)",
+              height: "clamp(380px, 38vw, 520px)",
             }}
           >
+            {/* Card 1: Analytics dashboard — largest, centered */}
             <div
-              ref={editorRef}
-              className="opacity-0"
+              className="hero-card absolute opacity-0"
+              data-depth="1"
               style={{
+                top: "8%",
+                left: "10%",
+                width: "230px",
                 transformStyle: "preserve-3d",
-                willChange: "transform",
               }}
             >
-              {/* Editor window */}
-              <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/20 border border-white/10">
-                {/* Title bar */}
-                <div className="bg-[#1E1E2E] px-4 py-3 flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
-                    <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
-                    <div className="w-3 h-3 rounded-full bg-[#28CA41]" />
-                  </div>
-                  <span className="text-[11px] text-white/30 ml-3 font-mono">
-                    your-project.ts
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.88)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  borderRadius: "14px",
+                  border: "1px solid rgba(59,141,214,0.12)",
+                  boxShadow: "0 8px 32px rgba(30,80,160,0.08), 0 1px 3px rgba(0,0,0,0.04)",
+                  padding: "18px",
+                }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span style={{ fontSize: "11px", fontWeight: 600, color: "#78716C", letterSpacing: "0.04em" }}>
+                    Revenue
                   </span>
+                  <span style={{ fontSize: "9px", color: "#A8A29E", fontWeight: 500 }}>This month</span>
                 </div>
-
-                {/* Code area */}
-                <div className="bg-[#1E1E2E] px-5 py-4 font-mono text-sm leading-relaxed min-h-[220px]">
-                  {CODE_LINES.map((line, i) => (
+                <div style={{ fontSize: "24px", fontWeight: 700, color: "#1C1917", letterSpacing: "-0.02em" }}>
+                  $48,290
+                </div>
+                <div className="flex items-center gap-1 mt-1">
+                  <span style={{ fontSize: "11px", color: "#22C55E", fontWeight: 600 }}>+12.5%</span>
+                  <span style={{ fontSize: "10px", color: "#A8A29E" }}>vs last month</span>
+                </div>
+                {/* Mini bar chart */}
+                <div className="flex items-end gap-[3px] mt-4" style={{ height: "36px" }}>
+                  {[40, 65, 45, 80, 55, 90, 70, 95, 60, 85].map((h, i) => (
                     <div
                       key={i}
-                      ref={(el) => { linesRef.current[i] = el; }}
-                      className="flex"
-                      style={{ paddingLeft: `${line.indent * 20}px` }}
+                      style={{
+                        width: "100%",
+                        height: `${h}%`,
+                        borderRadius: "2px",
+                        background: i >= 7 ? "#3B8DD6" : "rgba(59,141,214,0.2)",
+                        transition: "height 0.3s ease",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Deploy notification — top right */}
+            <div
+              className="hero-card absolute opacity-0"
+              data-depth="1.5"
+              style={{
+                top: "2%",
+                right: "0%",
+                width: "190px",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.9)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(59,141,214,0.1)",
+                  boxShadow: "0 6px 24px rgba(30,80,160,0.07)",
+                  padding: "14px 16px",
+                }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div
+                    style={{
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      background: "#22C55E",
+                      boxShadow: "0 0 6px rgba(34,197,94,0.4)",
+                    }}
+                  />
+                  <span style={{ fontSize: "11px", fontWeight: 600, color: "#1C1917" }}>
+                    Deployed
+                  </span>
+                </div>
+                <div style={{ fontSize: "10px", color: "#78716C", lineHeight: 1.5 }}>
+                  Production build v2.4.1 shipped successfully
+                </div>
+                <div style={{ fontSize: "9px", color: "#A8A29E", marginTop: "6px" }}>
+                  2 min ago
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Team / Sprint progress — mid left */}
+            <div
+              className="hero-card absolute opacity-0"
+              data-depth="0.8"
+              style={{
+                top: "52%",
+                left: "0%",
+                width: "200px",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.88)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(59,141,214,0.1)",
+                  boxShadow: "0 6px 24px rgba(30,80,160,0.07)",
+                  padding: "14px 16px",
+                }}
+              >
+                <div style={{ fontSize: "11px", fontWeight: 600, color: "#78716C", marginBottom: "8px" }}>
+                  Sprint Progress
+                </div>
+                {/* Progress bar */}
+                <div
+                  style={{
+                    height: "6px",
+                    background: "rgba(59,141,214,0.12)",
+                    borderRadius: "3px",
+                    overflow: "hidden",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "72%",
+                      height: "100%",
+                      background: "linear-gradient(90deg, #3B8DD6, #60A5FA)",
+                      borderRadius: "3px",
+                    }}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span style={{ fontSize: "10px", color: "#1C1917", fontWeight: 600 }}>18/25 tasks</span>
+                  <span style={{ fontSize: "10px", color: "#3B8DD6", fontWeight: 600 }}>72%</span>
+                </div>
+                {/* Team avatars */}
+                <div className="flex -space-x-2 mt-3">
+                  {["#3B8DD6", "#E8762D", "#22C55E", "#8B5CF6"].map((color, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        borderRadius: "50%",
+                        background: color,
+                        border: "2px solid white",
+                        fontSize: "9px",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 700,
+                      }}
                     >
-                      <span className="text-white/20 select-none w-6 text-right mr-4 text-xs leading-relaxed">
-                        {i + 1}
-                      </span>
-                      <span
-                        className="code-text"
-                        data-text={line.text}
-                        style={{ color: line.color }}
-                      />
+                      {["A", "J", "S", "M"][i]}
                     </div>
                   ))}
-                  {/* Blinking cursor */}
-                  <div ref={cursorRef} className="inline-block w-[2px] h-4 bg-accent ml-[44px] mt-1" />
                 </div>
+              </div>
+            </div>
 
-                {/* Bottom bar */}
-                <div className="bg-[#181825] px-4 py-2 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-white/25 font-mono">TypeScript</span>
-                    <span className="text-[10px] text-white/25 font-mono">UTF-8</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#28CA41]" />
-                    <span className="text-[10px] text-white/25 font-mono">Ready</span>
-                  </div>
+            {/* Card 4: Live status pill — floating small */}
+            <div
+              className="hero-card absolute opacity-0"
+              data-depth="2"
+              style={{
+                top: "40%",
+                right: "5%",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.92)",
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(34,197,94,0.15)",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+                  padding: "8px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
+                    background: "#22C55E",
+                    animation: "pulse 2s ease-in-out infinite",
+                  }}
+                />
+                <span style={{ fontSize: "11px", fontWeight: 600, color: "#1C1917" }}>
+                  Live
+                </span>
+                <span style={{ fontSize: "10px", color: "#A8A29E" }}>
+                  99.9% uptime
+                </span>
+              </div>
+            </div>
+
+            {/* Card 5: Code snippet — bottom right */}
+            <div
+              className="hero-card absolute opacity-0"
+              data-depth="1.2"
+              style={{
+                bottom: "4%",
+                right: "2%",
+                width: "180px",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              <div
+                style={{
+                  background: "rgba(28,25,23,0.92)",
+                  backdropFilter: "blur(14px)",
+                  WebkitBackdropFilter: "blur(14px)",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: "0 6px 24px rgba(0,0,0,0.12)",
+                  padding: "12px 14px",
+                  fontFamily: "monospace",
+                }}
+              >
+                <div className="flex items-center gap-1 mb-2">
+                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#FF5F57" }} />
+                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#FFBD2E" }} />
+                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#28CA41" }} />
+                </div>
+                <div style={{ fontSize: "10px", lineHeight: 1.7 }}>
+                  <span style={{ color: "#60A5FA" }}>const</span>{" "}
+                  <span style={{ color: "#A5B4FC" }}>app</span>{" "}
+                  <span style={{ color: "#78716C" }}>=</span>{" "}
+                  <span style={{ color: "#34D399" }}>deploy</span>
+                  <span style={{ color: "#78716C" }}>();</span>
+                  <br />
+                  <span style={{ color: "#78716C" }}>// </span>
+                  <span style={{ color: "#4ADE80" }}>Ready</span>
                 </div>
               </div>
             </div>

@@ -47,43 +47,51 @@ export function FeaturedPost({
   return (
     <article
       ref={cardRef}
-      className="bg-bg-primary rounded-2xl border border-border overflow-hidden hover:border-text-tertiary transition-colors duration-300"
+      className="group rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+      style={{
+        background: "rgba(255,255,255,0.7)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(59,141,214,0.08)",
+        boxShadow: "0 4px 24px rgba(30,80,160,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+      }}
     >
       <div className="flex flex-col md:flex-row-reverse">
         {/* Image */}
         {imageUrl && (
-          <Link href={`/blog/${slug}`} className="md:w-1/2 relative h-64 md:h-auto">
+          <Link href={`/blog/${slug}`} className="md:w-1/2 relative h-64 md:h-auto overflow-hidden">
             <Image
               src={imageUrl}
               alt={title}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
           </Link>
         )}
 
         {/* Content */}
-        <div className="md:w-1/2 p-8 flex flex-col justify-between">
+        <div className="md:w-1/2 p-8 lg:p-10 flex flex-col justify-between">
           <div>
-            <span className="inline-block bg-bg-cream text-text-secondary text-xs font-semibold uppercase px-3 py-1 rounded-full mb-4">
+            <span className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.15em] uppercase text-accent mb-5">
+              <span className="h-px w-6 bg-accent/50" />
               Featured
             </span>
 
             <Link href={`/blog/${slug}`}>
-              <h2 className="font-serif text-2xl md:text-3xl font-normal text-text-primary mb-4 hover:text-accent transition-colors">
+              <h2 className="font-serif text-2xl md:text-3xl font-normal text-text-primary mb-4 hover:text-accent transition-colors duration-300">
                 {title}
               </h2>
             </Link>
 
-            <p className="text-text-secondary mb-6">
+            <p className="text-text-secondary leading-relaxed mb-6">
               {excerpt}
             </p>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-border">
+          <div className="flex items-center justify-between pt-5 border-t border-border/50">
             <div className="flex items-center gap-3">
               {authorAvatar && (
-                <div className="relative w-10 h-10 rounded-full overflow-hidden">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-accent/10">
                   <Image
                     src={authorAvatar}
                     alt={authorName}
@@ -92,7 +100,7 @@ export function FeaturedPost({
                   />
                 </div>
               )}
-              <span className="text-sm font-medium text-text-primary uppercase">
+              <span className="text-sm font-medium text-text-primary">
                 {authorName}
               </span>
             </div>

@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { useGSAP, gsap } from "@/hooks/useGSAP";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 interface TeamMember {
   fields: {
@@ -27,44 +29,30 @@ interface TeamProps {
 
 export function Team({ data }: TeamProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    if (!sectionRef.current) return;
+    if (!cardsRef.current) return;
+
+    const cards = cardsRef.current.querySelectorAll(".team-card");
+    if (cards.length === 0) return;
 
     gsap.fromTo(
-      headingRef.current,
-      { opacity: 0, y: 30 },
+      cards,
+      { opacity: 0, y: 50, scale: 0.95 },
       {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        scale: 1,
+        duration: 0.7,
+        stagger: 0.12,
+        ease: "power3.out",
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
+          trigger: cardsRef.current,
+          start: "top 85%",
         },
       }
     );
-
-    const cards = cardsRef.current?.querySelectorAll(".team-card");
-    if (cards) {
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 80%",
-          },
-        }
-      );
-    }
   }, [data]);
 
   const getImageUrl = (member: TeamMember) => {
@@ -90,21 +78,26 @@ export function Team({ data }: TeamProps) {
     return null;
   }
 
+  // Adaptive grid: center for small teams
+  const gridCols = sortedMembers.length <= 3
+    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto"
+    : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+
   return (
-    <section ref={sectionRef} className="py-16 lg:py-24 bg-bg-cream">
-      <div className="container mx-auto px-4 lg:px-8">
-        <div ref={headingRef} className="text-center mb-12">
-          <h2 className="font-serif heading-lg font-normal text-text-primary mb-4">
-            Our Team
-          </h2>
-          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-            Meet the talented people behind Ateed Tech.
-          </p>
-        </div>
+    <section ref={sectionRef} className="relative py-20 lg:py-28 bg-bg-cream overflow-hidden">
+      {/* Grain texture */}
+      <div className="hero-grain" />
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
+        <FadeIn>
+          <SectionHeading eyebrow="Our Team" align="center">
+            The people behind Ateed Tech
+          </SectionHeading>
+        </FadeIn>
 
         <div
           ref={cardsRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className={`grid ${gridCols} gap-6`}
         >
           {sortedMembers.map((member) => {
             const imageUrl = getImageUrl(member);
@@ -112,25 +105,51 @@ export function Team({ data }: TeamProps) {
             return (
               <div
                 key={member.sys.id}
-                className="team-card bg-bg-primary rounded-2xl border border-border overflow-hidden hover:border-text-tertiary transition-colors duration-300"
+                className="team-card group relative rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  aspectRatio: "3 / 4",
+                  boxShadow: "0 4px 24px rgba(30,80,160,0.08), 0 1px 3px rgba(0,0,0,0.04)",
+                }}
               >
-                {imageUrl && (
-                  <div className="relative h-72">
-                    <Image
-                      src={imageUrl}
-                      alt={member.fields.firstName || "Team member"}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      loading="lazy"
-                    />
-                  </div>
+                {/* Full-bleed photo */}
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={member.fields.firstName || "Team member"}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-bg-primary" />
                 )}
-                <div className="p-4 text-center">
-                  <h3 className="font-serif text-lg font-normal text-text-primary">
+
+                {/* Warm gradient overlay at bottom — always visible, intensifies on hover */}
+                <div
+                  className="absolute inset-0 transition-opacity duration-500"
+                  style={{
+                    background: "linear-gradient(to top, rgba(28,25,23,0.65) 0%, rgba(28,25,23,0.25) 35%, transparent 60%)",
+                  }}
+                />
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: "linear-gradient(to top, rgba(28,25,23,0.75) 0%, rgba(28,25,23,0.35) 40%, transparent 65%)",
+                  }}
+                />
+
+                {/* Name + title overlaid at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+                  <h3
+                    className="font-serif text-xl font-normal text-white mb-2 transition-all duration-500"
+                    style={{
+                      textShadow: "0 0 20px rgba(59,141,214,0.35), 0 0 40px rgba(59,141,214,0.15)",
+                    }}
+                  >
                     {member.fields.firstName}
                   </h3>
-                  <p className="text-sm text-text-secondary">
+                  <p className="text-sm text-white/75 group-hover:text-white/90 transition-colors duration-300">
                     {member.fields.jobTitle}
                   </p>
                 </div>

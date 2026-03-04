@@ -58,9 +58,9 @@ const richTextOptions = {
     [BLOCKS.HEADING_4]: (node: any, next: any) => `<h4 class="font-serif text-xl font-normal mb-3 mt-4 text-[#1C1917]">${next(node.content)}</h4>`,
     [BLOCKS.HEADING_5]: (node: any, next: any) => `<h5 class="font-serif text-lg font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h5>`,
     [BLOCKS.HEADING_6]: (node: any, next: any) => `<h6 class="font-serif text-base font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h6>`,
-    [BLOCKS.UL_LIST]: (node: any, next: any) => `<ul class="list-disc list-inside mb-6 space-y-2">${next(node.content)}</ul>`,
-    [BLOCKS.OL_LIST]: (node: any, next: any) => `<ol class="list-decimal list-inside mb-6 space-y-2">${next(node.content)}</ol>`,
-    [BLOCKS.LIST_ITEM]: (node: any, next: any) => `<li class="text-[#78716C]">${next(node.content)}</li>`,
+    [BLOCKS.UL_LIST]: (node: any, next: any) => `<ul class="list-disc pl-6 mb-6 space-y-1.5">${next(node.content)}</ul>`,
+    [BLOCKS.OL_LIST]: (node: any, next: any) => `<ol class="list-decimal pl-6 mb-6 space-y-1.5">${next(node.content)}</ol>`,
+    [BLOCKS.LIST_ITEM]: (node: any, next: any) => `<li class="text-[#78716C] leading-relaxed">${next(node.content)}</li>`,
     [BLOCKS.QUOTE]: (node: any, next: any) =>
       `<blockquote class="border-l-4 border-[#3B8DD6] pl-6 py-2 my-6 italic text-[#78716C]">${next(node.content)}</blockquote>`,
     [BLOCKS.HR]: () => `<hr class="my-8 border-[#E7E5E4]" />`,
@@ -282,14 +282,20 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* Content */}
           <div
-            className="max-w-3xl mx-auto prose prose-lg"
+            className="max-w-3xl mx-auto blog-content"
             dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
 
           {/* Related Posts */}
           {relatedPosts.length > 0 && (
-            <section className="max-w-6xl mx-auto mt-16 pt-12 border-t border-border">
-              <h2 className="font-serif text-2xl font-normal text-text-primary mb-8">Latest Stories</h2>
+            <section className="max-w-6xl mx-auto mt-20 pt-12 border-t border-border">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="h-px w-8 bg-accent/50" />
+                <span className="text-xs font-medium tracking-[0.2em] uppercase text-accent">
+                  More to Read
+                </span>
+              </div>
+              <h2 className="font-serif heading-md font-normal text-text-primary mb-10">Latest Stories</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost: any) => {
                   const relatedAuthorId = relatedPost.fields.author?.sys?.id;
@@ -302,30 +308,40 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   const relatedDate = formatDate(relatedPost.fields.publishDate || relatedPost.sys.createdAt);
 
                   return (
-                    <article key={relatedPost.sys.id} className="bg-bg-primary rounded-2xl border border-border overflow-hidden hover:border-text-tertiary transition-colors duration-300">
+                    <article
+                      key={relatedPost.sys.id}
+                      className="group rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                      style={{
+                        background: "rgba(255,255,255,0.7)",
+                        backdropFilter: "blur(12px)",
+                        WebkitBackdropFilter: "blur(12px)",
+                        border: "1px solid rgba(59,141,214,0.08)",
+                        boxShadow: "0 4px 24px rgba(30,80,160,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+                      }}
+                    >
                       {relatedImageUrl && (
-                        <Link href={`/blog/${getSlug(relatedPost.fields.title)}`} className="relative h-48 block">
+                        <Link href={`/blog/${getSlug(relatedPost.fields.title)}`} className="relative h-48 block overflow-hidden">
                           <Image
                             src={relatedImageUrl}
                             alt={relatedPost.fields.title}
                             fill
-                            className="object-cover"
+                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                           />
                         </Link>
                       )}
                       <div className="p-6">
                         <Link href={`/blog/${getSlug(relatedPost.fields.title)}`}>
-                          <h3 className="font-serif font-normal text-text-primary mb-2 hover:text-accent transition-colors line-clamp-2">
+                          <h3 className="font-serif font-normal text-text-primary mb-2 hover:text-accent transition-colors duration-300 line-clamp-2">
                             {relatedPost.fields.title}
                           </h3>
                         </Link>
-                        <p className="text-sm text-text-secondary line-clamp-3 mb-4">
+                        <p className="text-sm text-text-secondary leading-relaxed line-clamp-3 mb-4">
                           {relatedPost.fields.excerpt}
                         </p>
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm pt-4 border-t border-border/50">
                           <div className="flex items-center gap-2">
                             {relatedAuthorAvatar && (
-                              <div className="relative w-6 h-6 rounded-full overflow-hidden">
+                              <div className="relative w-6 h-6 rounded-full overflow-hidden ring-2 ring-accent/10">
                                 <Image
                                   src={relatedAuthorAvatar}
                                   alt={relatedAuthorName}
@@ -334,7 +350,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                                 />
                               </div>
                             )}
-                            <span className="text-text-primary">{relatedAuthorName}</span>
+                            <span className="font-medium text-text-primary">{relatedAuthorName}</span>
                           </div>
                           <time className="text-text-tertiary">{relatedDate}</time>
                         </div>

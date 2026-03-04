@@ -35,15 +35,10 @@ export function ContactForm() {
     const formData = new FormData(e.currentTarget);
 
     try {
-      // For now, we'll just simulate a submission
-      // In production, you'd connect this to your backend (Parse, API route, etc.)
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Log form data (replace with actual API call)
       console.log("Form submitted:", Object.fromEntries(formData));
-
       setIsSubmitted(true);
-    } catch (err) {
+    } catch {
       setError("There was an error sending your message. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -52,19 +47,28 @@ export function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <div className="bg-bg-primary rounded-2xl border border-border p-8 text-center">
-        <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div
+        className="rounded-2xl p-10 text-center"
+        style={{
+          background: "rgba(255,255,255,0.7)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          border: "1px solid rgba(59,141,214,0.1)",
+          boxShadow: "0 8px 32px rgba(30,80,160,0.08), 0 1px 3px rgba(0,0,0,0.03)",
+        }}
+      >
+        <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg className="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
         <h2 className="font-serif text-2xl font-normal text-text-primary mb-4">Thank You!</h2>
-        <p className="text-text-secondary mb-6">
+        <p className="text-text-secondary mb-8 max-w-md mx-auto leading-relaxed">
           Your message has been sent successfully. We appreciate your interest and will get back to you as soon as possible.
         </p>
         <a
           href="/"
-          className="inline-block bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-accent-hover transition-colors"
+          className="inline-block bg-accent text-white px-8 py-3 rounded-full font-medium hover:bg-accent-hover transition-colors"
         >
           Return to Homepage
         </a>
@@ -72,26 +76,37 @@ export function ContactForm() {
     );
   }
 
+  const inputClasses = "w-full px-0 py-3 border-0 border-b border-border bg-transparent focus:border-accent focus:ring-0 outline-none transition-colors text-text-primary placeholder:text-text-tertiary";
+
   return (
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="bg-bg-primary rounded-2xl border border-border p-8"
+      className="rounded-2xl p-8 lg:p-10"
+      style={{
+        background: "rgba(255,255,255,0.7)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        border: "1px solid rgba(59,141,214,0.1)",
+        boxShadow: "0 8px 32px rgba(30,80,160,0.08), 0 1px 3px rgba(0,0,0,0.03)",
+      }}
     >
-      <h2 className="font-serif text-2xl font-normal text-text-primary mb-6">
-        Let us hear from you directly!
+      <h2 className="font-serif heading-md font-normal text-text-primary mb-2">
+        Let us hear from you
       </h2>
+      <p className="text-text-secondary mb-8">
+        Fill in the details below and we&apos;ll get back to you shortly.
+      </p>
 
       {error && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 text-sm">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* First Name */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6">
         <div>
-          <label htmlFor="firstName" className="block text-sm font-medium text-text-primary mb-2">
+          <label htmlFor="firstName" className="block text-xs font-medium tracking-wider uppercase text-text-tertiary mb-2">
             First Name *
           </label>
           <input
@@ -99,13 +114,13 @@ export function ContactForm() {
             id="firstName"
             name="firstName"
             required
-            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all bg-bg-primary"
+            className={inputClasses}
+            placeholder="John"
           />
         </div>
 
-        {/* Last Name */}
         <div>
-          <label htmlFor="lastName" className="block text-sm font-medium text-text-primary mb-2">
+          <label htmlFor="lastName" className="block text-xs font-medium tracking-wider uppercase text-text-tertiary mb-2">
             Last Name *
           </label>
           <input
@@ -113,13 +128,13 @@ export function ContactForm() {
             id="lastName"
             name="lastName"
             required
-            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all bg-bg-primary"
+            className={inputClasses}
+            placeholder="Doe"
           />
         </div>
 
-        {/* Organization */}
         <div>
-          <label htmlFor="organization" className="block text-sm font-medium text-text-primary mb-2">
+          <label htmlFor="organization" className="block text-xs font-medium tracking-wider uppercase text-text-tertiary mb-2">
             Organization *
           </label>
           <input
@@ -127,13 +142,13 @@ export function ContactForm() {
             id="organization"
             name="organization"
             required
-            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all bg-bg-primary"
+            className={inputClasses}
+            placeholder="Acme Inc."
           />
         </div>
 
-        {/* Title */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-text-primary mb-2">
+          <label htmlFor="title" className="block text-xs font-medium tracking-wider uppercase text-text-tertiary mb-2">
             Title *
           </label>
           <input
@@ -141,13 +156,13 @@ export function ContactForm() {
             id="title"
             name="title"
             required
-            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all bg-bg-primary"
+            className={inputClasses}
+            placeholder="CTO"
           />
         </div>
 
-        {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-2">
+          <label htmlFor="email" className="block text-xs font-medium tracking-wider uppercase text-text-tertiary mb-2">
             Email *
           </label>
           <input
@@ -155,43 +170,43 @@ export function ContactForm() {
             id="email"
             name="email"
             required
-            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all bg-bg-primary"
+            className={inputClasses}
+            placeholder="john@acme.com"
           />
         </div>
 
-        {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-text-primary mb-2">
+          <label htmlFor="phone" className="block text-xs font-medium tracking-wider uppercase text-text-tertiary mb-2">
             Phone
           </label>
           <input
             type="tel"
             id="phone"
             name="phone"
-            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all bg-bg-primary"
+            className={inputClasses}
+            placeholder="+1 (555) 000-0000"
           />
         </div>
       </div>
 
-      {/* Message */}
-      <div className="mb-6">
-        <label htmlFor="message" className="block text-sm font-medium text-text-primary mb-2">
+      <div className="mb-8">
+        <label htmlFor="message" className="block text-xs font-medium tracking-wider uppercase text-text-tertiary mb-2">
           Message *
         </label>
         <textarea
           id="message"
           name="message"
-          rows={5}
+          rows={4}
           required
-          className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none bg-bg-primary"
+          className={`${inputClasses} resize-none`}
+          placeholder="Tell us about your project..."
         />
       </div>
 
-      {/* Submit Button */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-accent text-white py-3 px-6 rounded-full font-medium hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-full bg-accent text-white py-3.5 px-6 rounded-full font-medium hover:bg-accent-hover transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center hover:shadow-lg hover:shadow-accent/20"
       >
         {isSubmitting ? (
           <>
@@ -202,7 +217,7 @@ export function ContactForm() {
             Sending...
           </>
         ) : (
-          "Send message"
+          "Send Message"
         )}
       </button>
     </form>

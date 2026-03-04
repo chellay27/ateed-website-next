@@ -184,3 +184,32 @@ body {
     transform-origin: top;
   }
 }
+
+/* Blog content — Contentful rich text typography */
+.blog-content {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #78716C;
+}
+
+.blog-content li > p {
+  display: inline;
+  margin-bottom: 0;
+}
+
+.blog-content li {
+  margin-bottom: 0;
+}
+
+.blog-content ol > li {
+  padding-left: 0.25em;
+}
+
+.blog-content ol > li::marker {
+  font-weight: 600;
+  color: #1C1917;
+}
+
+.blog-content ul > li::marker {
+  color: #3B8DD6;
+}

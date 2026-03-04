@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useGSAP, gsap } from "@/hooks/useGSAP";
 import { FadeIn } from "@/components/animations/FadeIn";
 
+
 interface MissionProps {
   data?: {
     fields: {
@@ -14,13 +15,14 @@ interface MissionProps {
 }
 
 export function Mission({ data }: MissionProps) {
+  const heading = data?.fields?.heading || "Who We Are";
   const description =
     data?.fields?.description ||
     "At Ateed Tech, we're more than just a custom software development company – we are your dedicated technology partner, committed to bringing your unique vision to life.";
 
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
+  const quoteRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     // Blue background grows outward from center
@@ -39,40 +41,43 @@ export function Mission({ data }: MissionProps) {
         {
           scale: 1.5,
           opacity: 1,
-          duration: 1,
+          duration: 1.8,
           ease: "power2.out",
         }
       ).to(bgRef.current, {
         borderRadius: "0%",
         scale: 1,
-        duration: 0.4,
+        duration: 0.7,
         ease: "power1.inOut",
       });
     }
 
-    // Accent line
-    if (lineRef.current) {
+    // Decorative quote mark drift
+    if (quoteRef.current) {
       gsap.fromTo(
-        lineRef.current,
-        { scaleY: 0 },
+        quoteRef.current,
+        { opacity: 0, y: 40, scale: 0.85 },
         {
-          scaleY: 1,
-          duration: 0.8,
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.4,
           ease: "power2.out",
           scrollTrigger: {
-            trigger: lineRef.current,
-            start: "top 85%",
+            trigger: sectionRef.current,
+            start: "top 75%",
             toggleActions: "play none none none",
           },
         }
       );
     }
+
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="relative py-20 lg:py-28 bg-bg-primary overflow-hidden"
+      className="relative py-28 lg:py-36 bg-bg-primary overflow-hidden"
     >
       {/* Blue background that grows outward */}
       <div
@@ -82,29 +87,40 @@ export function Mission({ data }: MissionProps) {
       />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start gap-8 md:gap-14">
-          {/* Left: Label + decorative vertical line */}
-          <div className="flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-0 md:pt-2 flex-shrink-0">
-            <FadeIn>
-              <span className="text-xs font-medium tracking-[0.2em] uppercase text-accent whitespace-nowrap">
-                Who We Are
-              </span>
-            </FadeIn>
-            <div
-              ref={lineRef}
-              className="h-px w-12 md:h-16 md:w-px bg-accent/30 md:mt-5 origin-top"
-            />
-          </div>
-
-          {/* Right: Large pull-quote style description */}
-          <div className="flex-1">
-            <FadeIn delay={0.15}>
-              <blockquote className="font-serif text-2xl sm:text-3xl md:text-[2rem] lg:text-[2.5rem] font-normal text-text-primary leading-snug md:leading-[1.35]">
-                {description}
-              </blockquote>
-            </FadeIn>
-          </div>
+        {/* Oversized decorative quotation mark */}
+        <div
+          ref={quoteRef}
+          className="pointer-events-none select-none absolute left-1/2 -translate-x-1/2"
+          style={{ top: "-16px" }}
+          aria-hidden="true"
+        >
+          <span
+            className="font-serif block"
+            style={{
+              fontSize: "clamp(160px, 22vw, 320px)",
+              lineHeight: 0.65,
+              color: "rgba(59,141,214,0.06)",
+            }}
+          >
+            &ldquo;
+          </span>
         </div>
+
+        {/* Centered editorial quote */}
+        <div className="max-w-3xl mx-auto text-center relative">
+          <FadeIn>
+            <span className="inline-block text-xs font-medium tracking-[0.2em] uppercase text-accent mb-8">
+              {heading}
+            </span>
+          </FadeIn>
+
+          <FadeIn delay={0.15}>
+            <blockquote className="font-serif text-[1.3rem] sm:text-2xl md:text-[1.65rem] lg:text-[1.9rem] font-normal text-text-primary leading-[1.6] md:leading-[1.55] italic">
+              {description}
+            </blockquote>
+          </FadeIn>
+        </div>
+
       </div>
     </section>
   );

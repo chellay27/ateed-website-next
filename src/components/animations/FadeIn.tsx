@@ -31,10 +31,12 @@ export function FadeIn({
 
   useFadeIn(ref, { y, x, duration, delay, direction });
 
+  const Tag = Component as any;
+
   return (
-    <Component ref={ref as any} className={className}>
+    <Tag ref={ref} className={className}>
       {children}
-    </Component>
+    </Tag>
   );
 }
 

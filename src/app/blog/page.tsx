@@ -3,6 +3,7 @@ import { getHeroSection, getBlogPosts } from "@/lib/contentful";
 import { PageHero } from "@/components/sections/PageHero";
 import { FeaturedPost } from "@/components/sections/FeaturedPost";
 import { BlogCard } from "@/components/sections/BlogCard";
+import { BlogGrid } from "@/components/sections/BlogGrid";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -65,12 +66,17 @@ export default async function BlogPage() {
         backgroundImage={backgroundImage}
       />
 
-      <section className="py-16 lg:py-24 bg-bg-primary">
+      <section className="py-20 lg:py-28 bg-bg-primary">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Featured Post */}
           {featuredPost && (
-            <div className="mb-16">
-              <h2 className="font-serif text-2xl font-normal text-text-primary mb-8">Featured</h2>
+            <div className="mb-20">
+              <div className="flex items-center gap-3 mb-8">
+                <span className="h-px w-8 bg-accent/50" />
+                <span className="text-xs font-medium tracking-[0.2em] uppercase text-accent">
+                  Featured
+                </span>
+              </div>
               {(() => {
                 const author = getAuthor(featuredPost);
                 const authorName = author?.fields?.name || "Anonymous";
@@ -95,10 +101,17 @@ export default async function BlogPage() {
 
           {/* Latest Stories */}
           <div>
-            <h2 className="font-serif text-2xl font-normal text-text-primary mb-4">Latest Stories</h2>
-            <p className="text-text-secondary mb-8">Here&apos;s what we&apos;ve been up to recently.</p>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="h-px w-8 bg-accent/50" />
+              <span className="text-xs font-medium tracking-[0.2em] uppercase text-accent">
+                All Posts
+              </span>
+            </div>
+            <h2 className="font-serif heading-md font-normal text-text-primary mb-8">
+              Latest Stories
+            </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <BlogGrid>
               {regularPosts.map((post: any) => {
                 const author = getAuthor(post);
                 const authorName = author?.fields?.name || "Anonymous";
@@ -120,11 +133,11 @@ export default async function BlogPage() {
                   />
                 );
               })}
-            </div>
+            </BlogGrid>
 
             {posts.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-text-tertiary">No blog posts found. Check back soon!</p>
+              <div className="text-center py-16">
+                <p className="text-text-tertiary text-lg">No blog posts found. Check back soon!</p>
               </div>
             )}
           </div>

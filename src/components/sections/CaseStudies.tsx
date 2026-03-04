@@ -60,7 +60,7 @@ export function CaseStudies({ data }: CaseStudiesProps) {
   const currentStudy = data[currentIndex];
 
   return (
-    <section className="py-24 lg:py-32 bg-bg-cream">
+    <section className="py-24 lg:py-32 bg-bg-blue">
       <div className="container mx-auto px-4 lg:px-8">
         <FadeIn>
           <SectionHeading eyebrow="Case Studies">

@@ -55,8 +55,21 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-bg-dark text-white" role="contentinfo">
-      <div className="container mx-auto px-4 lg:px-8 py-16 lg:py-20">
+    <footer className="relative bg-bg-dark text-white overflow-hidden" role="contentinfo">
+      {/* Orange gradient orb — bottom left, echoing hero's orange accent */}
+      <div
+        className="absolute rounded-full pointer-events-none orb-breathe"
+        style={{
+          width: "450px",
+          height: "450px",
+          bottom: "-25%",
+          left: "-8%",
+          background: "radial-gradient(circle at 50% 50%, rgba(232,118,45,0.35) 0%, rgba(232,118,45,0.15) 35%, rgba(232,118,45,0.04) 60%, transparent 75%)",
+          filter: "blur(70px)",
+        }}
+      />
+
+      <div className="container mx-auto px-4 lg:px-8 py-16 lg:py-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
           {/* Brand column */}
           <div className="space-y-4">

@@ -64,7 +64,7 @@ export function CoreValues({ data }: CoreValuesProps) {
             >
               <div
                 className="w-3 h-3 rounded-full mt-2 shrink-0"
-                style={{ backgroundColor: value.fields.iconBackgroundColor || "#C2410C" }}
+                style={{ backgroundColor: value.fields.iconBackgroundColor || "#3B8DD6" }}
               />
               <div>
                 <h3 className="font-serif text-xl font-normal text-text-primary mb-2">

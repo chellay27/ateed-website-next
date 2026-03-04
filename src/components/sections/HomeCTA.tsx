@@ -7,14 +7,10 @@ import { Button } from "@/components/ui/Button";
 export function HomeCTA() {
   return (
     <section className="relative py-24 lg:py-32 bg-bg-dark overflow-hidden">
-      {/* Gradient orb decorations */}
+      {/* Gradient orb — top right */}
       <div
         className="gradient-orb gradient-orb-warm"
         style={{ width: "500px", height: "500px", top: "-20%", right: "-5%" }}
-      />
-      <div
-        className="gradient-orb gradient-orb-cool"
-        style={{ width: "350px", height: "350px", bottom: "-15%", left: "-3%" }}
       />
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10 text-center">

@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  /* Warm palette */
+  /* Brand palette */
   --bg-primary: #FAFAF8;
   --bg-cream: #F5F0EB;
+  --bg-blue: #EDF3FA;
   --bg-dark: #1C1917;
   --bg-dark-secondary: #292524;
 
@@ -11,8 +12,8 @@
   --text-secondary: #78716C;
   --text-tertiary: #A8A29E;
 
-  --accent: #C2410C;
-  --accent-hover: #9A3412;
+  --accent: #3B8DD6;
+  --accent-hover: #2B6CB0;
 
   --border: #E7E5E4;
   --border-dark: #44403C;
@@ -21,6 +22,7 @@
 @theme inline {
   --color-bg-primary: var(--bg-primary);
   --color-bg-cream: var(--bg-cream);
+  --color-bg-blue: var(--bg-blue);
   --color-bg-dark: var(--bg-dark);
   --color-bg-dark-secondary: var(--bg-dark-secondary);
 
@@ -88,14 +90,31 @@ body {
   filter: blur(80px);
   opacity: 0.3;
   pointer-events: none;
+  animation: orbBreathe 8s ease-in-out infinite;
+}
+
+/* Orb breathing animation — slow scale + opacity pulse */
+.orb-breathe {
+  animation: orbBreathe 8s ease-in-out infinite;
+}
+
+@keyframes orbBreathe {
+  0%, 100% {
+    transform: scale(0.6);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.45;
+  }
 }
 
 .gradient-orb-warm {
-  background: radial-gradient(circle, #C2410C 0%, #F59E0B 50%, transparent 70%);
+  background: radial-gradient(circle, #3B8DD6 0%, #60A5FA 50%, transparent 70%);
 }
 
 .gradient-orb-cool {
-  background: radial-gradient(circle, #C2410C 0%, #7C2D12 50%, transparent 70%);
+  background: radial-gradient(circle, #3B8DD6 0%, #1E50A0 50%, transparent 70%);
 }
 
 /* Text reveal word spans */
@@ -132,7 +151,7 @@ body {
 
 /* Selection color */
 ::selection {
-  background-color: #C2410C;
+  background-color: #3B8DD6;
   color: white;
 }
 

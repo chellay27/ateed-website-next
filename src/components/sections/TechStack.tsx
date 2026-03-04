@@ -48,10 +48,10 @@ export function TechStack({ data }: TechStackProps) {
   }, [data]);
 
   return (
-    <section ref={sectionRef} className="py-24 lg:py-32 bg-bg-dark">
+    <section ref={sectionRef} className="py-24 lg:py-32 bg-bg-primary">
       <div className="container mx-auto px-4 lg:px-8">
         <FadeIn>
-          <SectionHeading eyebrow="Technology" dark>
+          <SectionHeading eyebrow="Technology">
             Our stack
           </SectionHeading>
         </FadeIn>
@@ -60,14 +60,14 @@ export function TechStack({ data }: TechStackProps) {
         <div ref={clustersRef} className="space-y-12">
           {data.map((techStack) => (
             <div key={techStack.sys.id} className="tech-cluster">
-              <h3 className="font-serif heading-sm font-normal text-white mb-5">
+              <h3 className="font-serif heading-sm font-normal text-text-primary mb-5">
                 {techStack.fields.title}
               </h3>
               <div className="flex flex-wrap gap-3">
                 {techStack.fields.stackList?.map((item, index) => (
                   <span
                     key={index}
-                    className="inline-block rounded-full border border-border-dark px-4 py-2 text-sm text-text-tertiary transition-colors duration-300 hover:border-accent hover:text-white"
+                    className="inline-block rounded-full border border-border px-4 py-2 text-sm text-text-secondary transition-colors duration-300 hover:border-accent hover:text-text-primary"
                   >
                     {item}
                   </span>

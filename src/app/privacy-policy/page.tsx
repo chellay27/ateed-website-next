@@ -30,7 +30,7 @@ const richTextOptions = {
     [BLOCKS.HR]: () => `<hr class="my-6 border-[#E7E5E4]" />`,
     [INLINES.HYPERLINK]: (node: any, next: any) => {
       const href = node.data.uri;
-      return `<a href="${href}" class="text-[#C2410C] hover:text-[#9A3412] hover:underline">${next(node.content)}</a>`;
+      return `<a href="${href}" class="text-[#3B8DD6] hover:text-[#2B6CB0] hover:underline">${next(node.content)}</a>`;
     },
   },
 };

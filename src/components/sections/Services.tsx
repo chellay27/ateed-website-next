@@ -62,10 +62,12 @@ export function Services({ data }: ServicesProps) {
           ref={cardsRef}
           className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border"
         >
-          {data.map((service, index) => (
+          {data.map((service, index) => {
+            const isLastOdd = index === data.length - 1 && data.length % 2 !== 0;
+            return (
             <div
               key={service.sys.id}
-              className="service-card bg-bg-primary p-8 lg:p-10 group cursor-pointer transition-colors duration-300 hover:bg-bg-cream"
+              className={`service-card bg-bg-primary p-8 lg:p-10 group cursor-pointer transition-colors duration-300 hover:bg-bg-blue ${isLastOdd ? "md:col-span-2" : ""}`}
             >
               <div className="flex items-start gap-6">
                 {/* Number */}
@@ -101,7 +103,8 @@ export function Services({ data }: ServicesProps) {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

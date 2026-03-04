@@ -31,14 +31,9 @@ export function HomeCTA() {
           </FadeIn>
 
           <FadeIn delay={0.5}>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button variant="primary" href="/contact">
-                Start a Conversation
-              </Button>
-              <Button variant="ghost" href="#services" className="text-white hover:text-accent">
-                View Our Work
-              </Button>
-            </div>
+            <Button variant="primary" href="/contact">
+              Start a Conversation
+            </Button>
           </FadeIn>
         </div>
       </div>

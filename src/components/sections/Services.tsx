@@ -74,7 +74,7 @@ export function Services({ data }: ServicesProps) {
         {/* 2-column grid of numbered service cards */}
         <div
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border"
+          className="grid grid-cols-1 md:grid-cols-2 gap-px"
         >
           {data.map((service, index) => {
             const color = SERVICE_COLORS[index % SERVICE_COLORS.length];

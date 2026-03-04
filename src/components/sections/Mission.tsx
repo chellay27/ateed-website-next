@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { useGSAP, gsap } from "@/hooks/useGSAP";
 import { FadeIn } from "@/components/animations/FadeIn";
 
-
 interface MissionProps {
   data?: {
     fields: {
@@ -25,14 +24,13 @@ export function Mission({ data }: MissionProps) {
   const quoteRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Blue background grows outward from center — scrubbed to scroll position
+    // Blue background grows outward from center — time-based, triggered by scroll
     if (bgRef.current && sectionRef.current) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 50%",
-          end: "bottom bottom",
-          scrub: 0.8,
+          start: "top 55%",
+          toggleActions: "play reverse play reverse",
         },
       });
 
@@ -40,38 +38,34 @@ export function Mission({ data }: MissionProps) {
         bgRef.current,
         { scale: 0, opacity: 0, borderRadius: "50%" },
         {
-          scale: 1.5,
-          opacity: 1,
-          ease: "power2.out",
-        },
-        0
-      ).to(bgRef.current, {
-        borderRadius: "0%",
-        scale: 1,
-        ease: "power1.inOut",
-      });
-    }
-
-    // Decorative quote mark drift — also scrubbed
-    if (quoteRef.current) {
-      gsap.fromTo(
-        quoteRef.current,
-        { opacity: 0, y: 40, scale: 0.85 },
-        {
-          opacity: 1,
-          y: 0,
           scale: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            end: "center center",
-            scrub: 0.6,
-          },
-        }
+          opacity: 1,
+          borderRadius: "0%",
+          duration: 1.8,
+          ease: "power2.inOut",
+        },
       );
     }
 
+    // Decorative quote mark drift — time-based with slight delay
+    if (quoteRef.current) {
+      gsap.fromTo(
+        quoteRef.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          delay: 0.3,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            toggleActions: "play reverse play reverse",
+          },
+        },
+      );
+    }
   }, []);
 
   return (
@@ -120,7 +114,6 @@ export function Mission({ data }: MissionProps) {
             </blockquote>
           </FadeIn>
         </div>
-
       </div>
     </section>
   );

@@ -6,6 +6,14 @@ import { useGSAP, gsap } from "@/hooks/useGSAP";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FadeIn } from "@/components/animations/FadeIn";
 
+const INDUSTRY_ACCENTS = [
+  "#3B8DD6", // Retail — blue
+  "#E8762D", // Logistics — orange
+  "#059669", // Healthcare — emerald
+  "#7C3AED", // Manufacturing — violet
+  "#0891B2", // Services — cyan
+];
+
 interface Industry {
   fields: {
     industryName?: string;
@@ -28,26 +36,26 @@ interface IndustriesProps {
 }
 
 export function Industries({ data }: IndustriesProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
+  // Staggered entrance animation
   useGSAP(() => {
-    if (!scrollRef.current) return;
-
-    const cards = scrollRef.current.querySelectorAll(".industry-card");
+    if (!listRef.current) return;
+    const cards = listRef.current.querySelectorAll(".industry-card");
     if (cards.length === 0) return;
 
     gsap.fromTo(
       cards,
-      { opacity: 0, y: 40 },
+      { opacity: 0, y: 50 },
       {
         opacity: 1,
         y: 0,
-        duration: 0.6,
-        stagger: 0.12,
+        duration: 0.8,
+        stagger: 0.15,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: scrollRef.current,
-          start: "top 85%",
+          trigger: listRef.current,
+          start: "top 80%",
           toggleActions: "play none none none",
         },
       }
@@ -68,50 +76,86 @@ export function Industries({ data }: IndustriesProps) {
             Sectors we serve
           </SectionHeading>
         </FadeIn>
-      </div>
 
-      {/* Horizontal scroll on desktop */}
-      <div
-        ref={scrollRef}
-        className="flex overflow-x-auto gap-5 px-4 lg:px-8 pb-4 snap-x snap-mandatory scrollbar-hide"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {data.map((industry) => {
-          const imageUrl = getImageUrl(industry);
+        <div ref={listRef} className="flex flex-col gap-5">
+          {data.map((industry, index) => {
+            const imageUrl = getImageUrl(industry);
+            const accent = INDUSTRY_ACCENTS[index % INDUSTRY_ACCENTS.length];
+            const imageRight = index % 2 === 0;
 
-          return (
-            <div
-              key={industry.sys.id}
-              className="industry-card relative flex-shrink-0 w-72 md:w-80 h-96 rounded-2xl overflow-hidden group snap-start"
-            >
-              {/* Background image */}
-              {imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt={industry.fields.industryName || "Industry"}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="320px"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-bg-dark-secondary" />
-              )}
+            return (
+              <div
+                key={industry.sys.id}
+                className="industry-card group rounded-2xl overflow-hidden transition-all duration-300"
+                style={{
+                  "--card-accent": accent,
+                  background: "rgba(255,255,255,0.55)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
+                  border: "1px solid rgba(59,141,214,0.08)",
+                  boxShadow:
+                    "0 4px 24px rgba(30,80,160,0.04), 0 1px 3px rgba(0,0,0,0.02)",
+                } as React.CSSProperties}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = `0 8px 40px ${accent}15, 0 2px 8px rgba(0,0,0,0.04)`;
+                  e.currentTarget.style.borderColor = `${accent}20`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 24px rgba(30,80,160,0.04), 0 1px 3px rgba(0,0,0,0.02)";
+                  e.currentTarget.style.borderColor = "rgba(59,141,214,0.08)";
+                }}
+              >
+                <div
+                  className={`flex flex-col ${
+                    imageRight ? "md:flex-row" : "md:flex-row-reverse"
+                  }`}
+                >
+                  {/* Text content */}
+                  <div className="flex-1 p-6 md:p-8 lg:p-10 flex flex-col justify-center relative overflow-hidden">
+                    {/* Heading + accent line wrapper */}
+                    <div className="w-fit mb-4">
+                      <h3 className="font-serif text-xl md:text-2xl font-normal text-text-primary transition-colors duration-300 group-hover:text-[var(--card-accent)]">
+                        {industry.fields.industryName}
+                      </h3>
+                      <div
+                        className="w-8 h-[2px] rounded-full group-hover:w-full transition-all duration-500 mt-2"
+                        style={{ backgroundColor: accent }}
+                      />
+                    </div>
 
-              {/* Dark gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <p className="text-text-secondary text-[0.925rem] leading-relaxed">
+                      {industry.fields.description}
+                    </p>
+                  </div>
 
-              {/* Content at the bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <h3 className="font-serif text-xl font-normal text-white mb-2">
-                  {industry.fields.industryName}
-                </h3>
-                <p className="text-sm text-white/70 leading-relaxed line-clamp-3 opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                  {industry.fields.description}
-                </p>
+                  {/* Image */}
+                  <div className="relative w-full md:w-[45%] h-56 md:h-auto md:min-h-[280px] flex-shrink-0 overflow-hidden">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={industry.fields.industryName || "Industry"}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 45vw"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-bg-dark-secondary" />
+                    )}
+                    {/* Soft gradient blend where image meets text */}
+                    <div
+                      className={`absolute inset-y-0 w-16 hidden md:block ${
+                        imageRight
+                          ? "left-0 bg-gradient-to-r from-white/40 to-transparent"
+                          : "right-0 bg-gradient-to-l from-white/40 to-transparent"
+                      }`}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger, Flip } from "@/lib/gsap";
 
 type GSAPCallback = (gsapInstance: typeof gsap, context: gsap.Context) => void | (() => void);
 
@@ -166,4 +166,4 @@ export function useParallax(
   }, [ref, speed]);
 }
 
-export { gsap, ScrollTrigger };
+export { gsap, ScrollTrigger, Flip };

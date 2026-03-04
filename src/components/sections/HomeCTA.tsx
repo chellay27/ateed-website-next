@@ -1,51 +1,12 @@
 "use client";
 
-import { useRef } from "react";
-import { useGSAP, gsap } from "@/hooks/useGSAP";
 import { TextReveal } from "@/components/animations/TextReveal";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
 
 export function HomeCTA() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    if (bgRef.current && sectionRef.current) {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 55%",
-          toggleActions: "play reverse play reverse",
-        },
-      });
-
-      tl.fromTo(
-        bgRef.current,
-        { scale: 0, opacity: 0, borderRadius: "50%" },
-        {
-          scale: 1,
-          opacity: 1,
-          borderRadius: "0%",
-          duration: 1.8,
-          ease: "power2.inOut",
-        },
-      );
-    }
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative py-24 lg:py-32 bg-bg-blue overflow-hidden"
-    >
-      {/* Dark background that grows outward */}
-      <div
-        ref={bgRef}
-        className="absolute inset-0 bg-bg-dark origin-center"
-        style={{ borderRadius: "50%", transform: "scale(0)" }}
-      />
-
+    <section className="relative py-24 lg:py-32 bg-bg-dark overflow-x-clip">
       {/* Gradient orb — top right */}
       <div
         className="gradient-orb gradient-orb-warm"

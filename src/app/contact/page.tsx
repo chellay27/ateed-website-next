@@ -36,7 +36,7 @@ export default async function ContactPage() {
       />
 
       {/* Contact Info + Form */}
-      <section className="relative py-20 lg:py-28 bg-bg-cream overflow-hidden">
+      <section className="relative py-20 lg:py-28 overflow-hidden" style={{ background: "linear-gradient(to bottom, var(--bg-cream), var(--bg-blue))" }}>
         {/* Grain texture */}
         <div className="hero-grain" />
 

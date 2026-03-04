@@ -55,7 +55,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-bg-dark text-white overflow-hidden" role="contentinfo">
+    <footer className="relative bg-bg-dark text-white overflow-x-clip" role="contentinfo">
       {/* Orange gradient orb — bottom left, echoing hero's orange accent */}
       <div
         className="absolute rounded-full pointer-events-none orb-breathe"

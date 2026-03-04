@@ -17,6 +17,16 @@ interface ContactInfoProps {
   data: ContactItem[];
 }
 
+function formatContactValue(label?: string, value?: string): string {
+  if (!value) return "";
+  // If it looks like a phone field and doesn't already have a country code, prepend +1
+  const isPhone = label?.toLowerCase().includes("call") || label?.toLowerCase().includes("phone");
+  if (isPhone && !value.startsWith("+")) {
+    return `+1 ${value}`;
+  }
+  return value;
+}
+
 export function ContactInfo({ data }: ContactInfoProps) {
   const cardsRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +74,7 @@ export function ContactInfo({ data }: ContactInfoProps) {
             {contact.fields.contactLabel}
           </p>
           <p className="font-serif text-lg text-text-primary">
-            {contact.fields.contactValue}
+            {formatContactValue(contact.fields.contactLabel, contact.fields.contactValue)}
           </p>
         </div>
       ))}

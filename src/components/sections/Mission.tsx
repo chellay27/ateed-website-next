@@ -71,7 +71,7 @@ export function Mission({ data }: MissionProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative py-28 lg:py-36 bg-bg-primary overflow-hidden"
+      className="relative py-28 lg:py-36 bg-bg-primary overflow-x-clip"
     >
       {/* Blue background that grows outward */}
       <div

@@ -36,7 +36,8 @@ export function Hero({ data }: HeroProps) {
     const moveX = (e.clientX - centerX) / rect.width;
     const moveY = (e.clientY - centerY) / rect.height;
 
-    const cards = cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
+    const cards =
+      cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
     cards.forEach((card) => {
       const depth = parseFloat(card.dataset.depth || "1");
       gsap.to(card, {
@@ -50,7 +51,8 @@ export function Hero({ data }: HeroProps) {
 
   const handleMouseLeave = useCallback(() => {
     if (!cardsContainerRef.current) return;
-    const cards = cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
+    const cards =
+      cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
     cards.forEach((card) => {
       gsap.to(card, {
         x: 0,
@@ -112,13 +114,14 @@ export function Hero({ data }: HeroProps) {
           ease: "power3.out",
           stagger: 0.12,
           delay: 0.8,
-        }
+        },
       );
     }
 
     // Scroll parallax — cards race upward faster than the page
     if (cardsContainerRef.current && containerRef.current) {
-      const cards = cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
+      const cards =
+        cardsContainerRef.current.querySelectorAll<HTMLElement>(".hero-card");
       cards.forEach((card) => {
         const depth = parseFloat(card.dataset.depth || "1");
         gsap.to(card, {
@@ -139,7 +142,7 @@ export function Hero({ data }: HeroProps) {
       gsap.fromTo(
         scrollRef.current,
         { opacity: 0, y: -10 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 1.2, ease: "power2.out" }
+        { opacity: 1, y: 0, duration: 0.8, delay: 1.2, ease: "power2.out" },
       );
     }
   }, []);
@@ -147,7 +150,7 @@ export function Hero({ data }: HeroProps) {
   return (
     <section
       ref={containerRef}
-      className="hero-section relative min-h-[100svh] flex items-center overflow-hidden bg-bg-primary"
+      className="hero-section relative min-h-[100svh] flex items-center overflow-x-clip bg-bg-primary"
     >
       {/* Grain texture overlay */}
       <div className="hero-grain" />
@@ -313,25 +316,61 @@ export function Hero({ data }: HeroProps) {
                   WebkitBackdropFilter: "blur(14px)",
                   borderRadius: "14px",
                   border: "1px solid rgba(59,141,214,0.12)",
-                  boxShadow: "0 8px 32px rgba(30,80,160,0.08), 0 1px 3px rgba(0,0,0,0.04)",
+                  boxShadow:
+                    "0 8px 32px rgba(30,80,160,0.08), 0 1px 3px rgba(0,0,0,0.04)",
                   padding: "18px",
                 }}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span style={{ fontSize: "11px", fontWeight: 600, color: "#78716C", letterSpacing: "0.04em" }}>
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      color: "#78716C",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
                     Revenue
                   </span>
-                  <span style={{ fontSize: "9px", color: "#A8A29E", fontWeight: 500 }}>This month</span>
+                  <span
+                    style={{
+                      fontSize: "9px",
+                      color: "#A8A29E",
+                      fontWeight: 500,
+                    }}
+                  >
+                    This month
+                  </span>
                 </div>
-                <div style={{ fontSize: "24px", fontWeight: 700, color: "#1C1917", letterSpacing: "-0.02em" }}>
+                <div
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: 700,
+                    color: "#1C1917",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
                   $48,290
                 </div>
                 <div className="flex items-center gap-1 mt-1">
-                  <span style={{ fontSize: "11px", color: "#22C55E", fontWeight: 600 }}>+12.5%</span>
-                  <span style={{ fontSize: "10px", color: "#A8A29E" }}>vs last month</span>
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      color: "#22C55E",
+                      fontWeight: 600,
+                    }}
+                  >
+                    +12.5%
+                  </span>
+                  <span style={{ fontSize: "10px", color: "#A8A29E" }}>
+                    vs last month
+                  </span>
                 </div>
                 {/* Mini bar chart */}
-                <div className="flex items-end gap-[3px] mt-4" style={{ height: "36px" }}>
+                <div
+                  className="flex items-end gap-[3px] mt-4"
+                  style={{ height: "36px" }}
+                >
                   {[40, 65, 45, 80, 55, 90, 70, 95, 60, 85].map((h, i) => (
                     <div
                       key={i}
@@ -380,14 +419,32 @@ export function Hero({ data }: HeroProps) {
                       boxShadow: "0 0 6px rgba(34,197,94,0.4)",
                     }}
                   />
-                  <span style={{ fontSize: "11px", fontWeight: 600, color: "#1C1917" }}>
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      color: "#1C1917",
+                    }}
+                  >
                     Deployed
                   </span>
                 </div>
-                <div style={{ fontSize: "10px", color: "#78716C", lineHeight: 1.5 }}>
+                <div
+                  style={{
+                    fontSize: "10px",
+                    color: "#78716C",
+                    lineHeight: 1.5,
+                  }}
+                >
                   Production build v2.4.1 shipped successfully
                 </div>
-                <div style={{ fontSize: "9px", color: "#A8A29E", marginTop: "6px" }}>
+                <div
+                  style={{
+                    fontSize: "9px",
+                    color: "#A8A29E",
+                    marginTop: "6px",
+                  }}
+                >
                   2 min ago
                 </div>
               </div>
@@ -415,7 +472,14 @@ export function Hero({ data }: HeroProps) {
                   padding: "14px 16px",
                 }}
               >
-                <div style={{ fontSize: "11px", fontWeight: 600, color: "#78716C", marginBottom: "8px" }}>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "#78716C",
+                    marginBottom: "8px",
+                  }}
+                >
                   Sprint Progress
                 </div>
                 {/* Progress bar */}
@@ -438,31 +502,49 @@ export function Hero({ data }: HeroProps) {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span style={{ fontSize: "10px", color: "#1C1917", fontWeight: 600 }}>18/25 tasks</span>
-                  <span style={{ fontSize: "10px", color: "#3B8DD6", fontWeight: 600 }}>72%</span>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: "#1C1917",
+                      fontWeight: 600,
+                    }}
+                  >
+                    18/25 tasks
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: "#3B8DD6",
+                      fontWeight: 600,
+                    }}
+                  >
+                    72%
+                  </span>
                 </div>
                 {/* Team avatars */}
                 <div className="flex -space-x-2 mt-3">
-                  {["#3B8DD6", "#E8762D", "#22C55E", "#8B5CF6"].map((color, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        width: "22px",
-                        height: "22px",
-                        borderRadius: "50%",
-                        background: color,
-                        border: "2px solid white",
-                        fontSize: "9px",
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {["A", "J", "S", "M"][i]}
-                    </div>
-                  ))}
+                  {["#3B8DD6", "#E8762D", "#22C55E", "#8B5CF6"].map(
+                    (color, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          width: "22px",
+                          height: "22px",
+                          borderRadius: "50%",
+                          background: color,
+                          border: "2px solid white",
+                          fontSize: "9px",
+                          color: "white",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: 700,
+                        }}
+                      >
+                        {["A", "J", "S", "M"][i]}
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
             </div>
@@ -500,7 +582,13 @@ export function Hero({ data }: HeroProps) {
                     animation: "pulse 2s ease-in-out infinite",
                   }}
                 />
-                <span style={{ fontSize: "11px", fontWeight: 600, color: "#1C1917" }}>
+                <span
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: "#1C1917",
+                  }}
+                >
                   Live
                 </span>
                 <span style={{ fontSize: "10px", color: "#A8A29E" }}>
@@ -533,9 +621,30 @@ export function Hero({ data }: HeroProps) {
                 }}
               >
                 <div className="flex items-center gap-1 mb-2">
-                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#FF5F57" }} />
-                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#FFBD2E" }} />
-                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#28CA41" }} />
+                  <div
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      background: "#FF5F57",
+                    }}
+                  />
+                  <div
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      background: "#FFBD2E",
+                    }}
+                  />
+                  <div
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      background: "#28CA41",
+                    }}
+                  />
                 </div>
                 <div style={{ fontSize: "10px", lineHeight: 1.7 }}>
                   <span style={{ color: "#60A5FA" }}>const</span>{" "}

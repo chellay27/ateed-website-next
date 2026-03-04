@@ -61,7 +61,7 @@ export function PageHero({ heading, description, backgroundImage }: PageHeroProp
   return (
     <section
       ref={heroRef}
-      className="relative pt-36 md:pt-40 pb-20 md:pb-28 bg-bg-cream overflow-hidden"
+      className="relative pt-36 md:pt-40 pb-20 md:pb-28 bg-bg-cream overflow-x-clip"
     >
       {/* Grain texture overlay */}
       <div className="hero-grain" />

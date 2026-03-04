@@ -30,14 +30,17 @@ export function Navbar() {
       { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
     );
 
-    // Scroll-triggered background change
+    // Scroll-triggered background change — trigger earlier on mobile
+    const isMd = window.matchMedia("(min-width: 768px)").matches;
+    const threshold = isMd ? 64 : 10;
+
     ScrollTrigger.create({
-      start: "top -80",
+      start: `top -${threshold}`,
       onUpdate: (self) => {
         if (!navRef.current) return;
-        if (self.direction === 1 && self.scroll() > 80) {
+        if (self.scroll() > threshold) {
           navRef.current.classList.add("nav-scrolled");
-        } else if (self.scroll() <= 80) {
+        } else {
           navRef.current.classList.remove("nav-scrolled");
         }
       },
@@ -67,7 +70,7 @@ export function Navbar() {
                 height={40}
                 className="w-8 h-8 lg:w-10 lg:h-10"
               />
-              <span className="font-serif text-xl font-medium text-text-primary">
+              <span className="font-serif text-xl font-medium text-text-primary hidden min-[340px]:inline">
                 Ateed Tech
               </span>
             </Link>

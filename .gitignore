@@ -42,3 +42,6 @@ next-env.d.ts
 
 # planning docs (local only)
 /docs/
+
+#playwright
+.playwright-mcp

@@ -75,124 +75,121 @@ export function Hero({ data }: HeroProps) {
       {/* Grain texture overlay */}
       <div className="hero-grain" />
 
-      {/* Content grid */}
+      {/* Gradient orbs — always visible, positioned as background */}
+      <div
+        ref={artRef}
+        className="absolute inset-0 z-[2] pointer-events-none"
+        aria-hidden="true"
+      >
+        {/* Large primary orb */}
+        <div
+          className="hero-orb absolute rounded-full"
+          style={{
+            width: "clamp(220px, 30vw, 380px)",
+            height: "clamp(220px, 30vw, 380px)",
+            top: "15%",
+            right: "-5%",
+            background:
+              "radial-gradient(circle at 40% 40%, rgba(194,65,12,0.45) 0%, rgba(245,158,11,0.2) 40%, rgba(245,158,11,0.05) 65%, transparent 80%)",
+            filter: "blur(60px)",
+          }}
+        />
+
+        {/* Deep burnt orb */}
+        <div
+          className="hero-orb absolute rounded-full"
+          style={{
+            width: "clamp(160px, 22vw, 280px)",
+            height: "clamp(160px, 22vw, 280px)",
+            top: "40%",
+            right: "10%",
+            background:
+              "radial-gradient(circle at 60% 50%, rgba(154,52,18,0.4) 0%, rgba(194,65,12,0.15) 40%, transparent 70%)",
+            filter: "blur(50px)",
+          }}
+        />
+
+        {/* Amber glow */}
+        <div
+          className="hero-orb absolute rounded-full"
+          style={{
+            width: "clamp(120px, 16vw, 200px)",
+            height: "clamp(120px, 16vw, 200px)",
+            top: "25%",
+            right: "15%",
+            background:
+              "radial-gradient(circle, rgba(245,158,11,0.35) 0%, rgba(251,191,36,0.1) 50%, transparent 70%)",
+            filter: "blur(40px)",
+          }}
+        />
+
+        {/* Small bright accent */}
+        <div
+          className="hero-orb absolute rounded-full"
+          style={{
+            width: "clamp(80px, 10vw, 120px)",
+            height: "clamp(80px, 10vw, 120px)",
+            bottom: "25%",
+            right: "25%",
+            background:
+              "radial-gradient(circle, rgba(194,65,12,0.3) 0%, transparent 65%)",
+            filter: "blur(30px)",
+          }}
+        />
+
+        {/* Faint warm wash at bottom */}
+        <div
+          className="hero-orb absolute rounded-full"
+          style={{
+            width: "clamp(180px, 24vw, 300px)",
+            height: "clamp(90px, 12vw, 150px)",
+            bottom: "5%",
+            right: "5%",
+            background:
+              "radial-gradient(ellipse, rgba(245,240,235,0.6) 0%, transparent 70%)",
+            filter: "blur(30px)",
+          }}
+        />
+      </div>
+
+      {/* Content */}
       <div className="container mx-auto px-4 lg:px-8 relative z-10 -mt-14">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-6 items-center">
-          {/* Left: Text content */}
-          <div>
-            <FadeIn delay={0.1}>
-              <div className="flex items-center gap-4 mb-5">
-                <span className="text-xs font-medium tracking-[0.2em] uppercase text-accent">
-                  Custom Software Development
-                </span>
-                <span className="h-px w-12 bg-accent/50" />
-              </div>
-            </FadeIn>
+        <div className="max-w-2xl">
+          <FadeIn delay={0.1}>
+            <div className="flex items-center gap-3 mb-5">
+              <span className="h-px w-8 bg-accent/50" />
+              <span className="text-xs font-medium tracking-[0.2em] uppercase text-accent">
+                Custom Software Development
+              </span>
+            </div>
+          </FadeIn>
 
-            <TextReveal
-              as="h1"
-              className="font-serif hero-heading font-normal text-text-primary mb-5"
-              stagger={0.05}
-              delay={0.2}
-            >
-              Software crafted to empower your future
-            </TextReveal>
-
-            <FadeIn delay={0.6}>
-              <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-xl mb-8">
-                We are your dedicated technology partner, committed to bringing
-                your unique vision to life through elegant, purposeful software.
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.8}>
-              <div className="flex flex-wrap gap-4">
-                <Button variant="primary" href="/contact">
-                  Start a Conversation
-                </Button>
-                <Button variant="secondary" href="#services">
-                  Explore Services
-                </Button>
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Right: Bold warm gradient composition */}
-          <div
-            ref={artRef}
-            className="relative h-[380px] lg:h-[440px] hidden lg:block"
-            aria-hidden="true"
+          <TextReveal
+            as="h1"
+            className="font-serif hero-heading font-normal text-text-primary mb-5"
+            stagger={0.05}
+            delay={0.2}
           >
-            {/* Large primary orb - warm orange, the anchor */}
-            <div
-              className="hero-orb absolute rounded-full"
-              style={{
-                width: "380px",
-                height: "380px",
-                top: "5%",
-                right: "0%",
-                background:
-                  "radial-gradient(circle at 40% 40%, rgba(194,65,12,0.45) 0%, rgba(245,158,11,0.2) 40%, rgba(245,158,11,0.05) 65%, transparent 80%)",
-                filter: "blur(60px)",
-              }}
-            />
+            Software crafted to empower your future
+          </TextReveal>
 
-            {/* Deep burnt orb - overlapping from left for depth */}
-            <div
-              className="hero-orb absolute rounded-full"
-              style={{
-                width: "280px",
-                height: "280px",
-                top: "35%",
-                right: "25%",
-                background:
-                  "radial-gradient(circle at 60% 50%, rgba(154,52,18,0.4) 0%, rgba(194,65,12,0.15) 40%, transparent 70%)",
-                filter: "blur(50px)",
-              }}
-            />
+          <FadeIn delay={0.6}>
+            <p className="text-lg md:text-xl text-text-secondary leading-relaxed max-w-xl mb-8">
+              We are your dedicated technology partner, committed to bringing
+              your unique vision to life through elegant, purposeful software.
+            </p>
+          </FadeIn>
 
-            {/* Amber glow - warm highlight where orbs meet */}
-            <div
-              className="hero-orb absolute rounded-full"
-              style={{
-                width: "200px",
-                height: "200px",
-                top: "20%",
-                right: "15%",
-                background:
-                  "radial-gradient(circle, rgba(245,158,11,0.35) 0%, rgba(251,191,36,0.1) 50%, transparent 70%)",
-                filter: "blur(40px)",
-              }}
-            />
-
-            {/* Small bright accent - adds a hot spot */}
-            <div
-              className="hero-orb absolute rounded-full"
-              style={{
-                width: "120px",
-                height: "120px",
-                bottom: "18%",
-                right: "40%",
-                background:
-                  "radial-gradient(circle, rgba(194,65,12,0.3) 0%, transparent 65%)",
-                filter: "blur(30px)",
-              }}
-            />
-
-            {/* Faint warm wash at bottom for grounding */}
-            <div
-              className="hero-orb absolute rounded-full"
-              style={{
-                width: "300px",
-                height: "150px",
-                bottom: "-5%",
-                right: "10%",
-                background:
-                  "radial-gradient(ellipse, rgba(245,240,235,0.6) 0%, transparent 70%)",
-                filter: "blur(30px)",
-              }}
-            />
-          </div>
+          <FadeIn delay={0.8}>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="primary" href="/contact">
+                Start a Conversation
+              </Button>
+              <Button variant="secondary" href="#services">
+                Explore Services
+              </Button>
+            </div>
+          </FadeIn>
         </div>
       </div>
 

@@ -27,7 +27,7 @@ export function Navbar() {
     gsap.fromTo(
       navRef.current,
       { opacity: 0, y: -20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
     );
 
     // Scroll-triggered background change — trigger earlier on mobile
@@ -62,17 +62,15 @@ export function Navbar() {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center">
               <Image
-                src="/logo.png"
+                src="/logo-with-name.png"
                 alt="Ateed Tech"
-                width={40}
-                height={40}
-                className="w-8 h-8 lg:w-10 lg:h-10"
+                width={140}
+                height={28}
+                className="h-6 lg:h-7 w-auto"
+                priority
               />
-              <span className="font-serif text-xl font-medium text-text-primary hidden min-[340px]:inline">
-                Ateed Tech
-              </span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -95,7 +93,11 @@ export function Navbar() {
 
             {/* Right side: CTA + Mobile toggle */}
             <div className="flex items-center gap-4">
-              <Button href="/contact" variant="primary" className="hidden md:inline-flex text-xs px-5 py-2.5">
+              <Button
+                href="/contact"
+                variant="primary"
+                className="hidden md:inline-flex text-xs px-5 py-2.5"
+              >
                 Let&apos;s Talk
               </Button>
 

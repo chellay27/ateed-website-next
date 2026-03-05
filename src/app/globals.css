@@ -40,9 +40,10 @@
   --font-serif: var(--font-newsreader);
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling + dark canvas so overscroll bounce matches footer */
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg-dark);
 }
 
 body {
@@ -51,6 +52,13 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
 }
 
 /* Fluid typography */
@@ -213,3 +221,4 @@ body {
 .blog-content ul > li::marker {
   color: #3B8DD6;
 }
+

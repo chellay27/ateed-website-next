@@ -55,7 +55,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-bg-dark text-white overflow-x-clip" role="contentinfo">
+    <footer className="relative bg-bg-dark text-white overflow-clip" role="contentinfo">
       {/* Orange gradient orb — bottom left, echoing hero's orange accent */}
       <div
         className="absolute rounded-full pointer-events-none orb-breathe"
@@ -69,7 +69,7 @@ export function Footer() {
         }}
       />
 
-      <div className="container mx-auto px-4 lg:px-8 py-16 lg:py-20 relative z-10">
+      <div className="container mx-auto px-4 lg:px-8 py-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
           {/* Brand column */}
           <div className="space-y-4">

@@ -40,10 +40,10 @@
   --font-serif: var(--font-newsreader);
 }
 
-/* Smooth scrolling + dark canvas so overscroll bounce matches footer */
+/* Smooth scrolling + cream canvas for overscroll bounce */
 html {
   scroll-behavior: smooth;
-  background-color: var(--bg-dark);
+  background-color: var(--bg-cream);
 }
 
 body {

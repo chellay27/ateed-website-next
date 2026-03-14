@@ -131,6 +131,8 @@ export function TechStack({ data }: TechStackProps) {
     );
   }, [data]);
 
+  if (!data || data.length === 0) return null;
+
   return (
     <section ref={sectionRef} className="py-24 lg:py-32 bg-bg-primary">
       <div className="container mx-auto px-4 lg:px-8">
@@ -143,7 +145,7 @@ export function TechStack({ data }: TechStackProps) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
         >
           {data.map((techStack, index) => {
-            const title = techStack.fields.title || "";
+            const title = techStack.fields?.title || "";
             const accent =
               CATEGORY_COLORS[title] ||
               FALLBACK_COLORS[index % FALLBACK_COLORS.length];

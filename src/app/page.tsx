@@ -61,15 +61,15 @@ export default async function HomePage() {
             hasOfferCatalog: {
               "@type": "OfferCatalog",
               name: "Software Development Services",
-              itemListElement: services.map((service: any, index: number) => ({
+              itemListElement: services?.map((service: any, index: number) => ({
                 "@type": "Offer",
                 itemOffered: {
                   "@type": "Service",
-                  name: service.fields.title,
-                  description: service.fields.cardText,
+                  name: service.fields?.title ?? "",
+                  description: service.fields?.cardText ?? "",
                 },
                 position: index + 1,
-              })),
+              })) ?? [],
             },
           }),
         }}
@@ -119,12 +119,12 @@ export default async function HomePage() {
         }}
       />
 
-      <Hero data={heroSection[0]} />
-      <Mission data={mission[0]} />
-      <Services data={services} />
-      <Industries data={industries} />
-      <TechStack data={techStack} />
-      <CaseStudies data={caseStudies} />
+      <Hero data={heroSection?.[0]} />
+      <Mission data={mission?.[0]} />
+      <Services data={services ?? []} />
+      <Industries data={industries ?? []} />
+      <TechStack data={techStack ?? []} />
+      <CaseStudies data={caseStudies ?? []} />
       <HomeCTA />
     </>
   );

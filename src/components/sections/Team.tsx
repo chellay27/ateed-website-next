@@ -56,22 +56,22 @@ export function Team({ data }: TeamProps) {
   }, [data]);
 
   const getImageUrl = (member: TeamMember) => {
-    const url = member.fields.picture?.fields?.file?.url;
+    const url = member.fields?.picture?.fields?.file?.url;
     if (!url) return null;
     return url.startsWith("//") ? `https:${url}` : url;
   };
 
   // Sort team members: CEO and CTO first, then by firstName
   const sortedMembers = [...data].sort((a, b) => {
-    const titleA = (a.fields.jobTitle || "").toLowerCase();
-    const titleB = (b.fields.jobTitle || "").toLowerCase();
+    const titleA = (a.fields?.jobTitle || "").toLowerCase();
+    const titleB = (b.fields?.jobTitle || "").toLowerCase();
 
     if (titleA.includes("ceo")) return -1;
     if (titleB.includes("ceo")) return 1;
     if (titleA.includes("cto")) return -1;
     if (titleB.includes("cto")) return 1;
 
-    return (a.fields.firstName || "").localeCompare(b.fields.firstName || "");
+    return (a.fields?.firstName || "").localeCompare(b.fields?.firstName || "");
   });
 
   if (!data || data.length === 0) {
@@ -115,7 +115,7 @@ export function Team({ data }: TeamProps) {
                 {imageUrl ? (
                   <Image
                     src={imageUrl}
-                    alt={member.fields.firstName || "Team member"}
+                    alt={member.fields?.firstName || "Team member"}
                     fill
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -147,10 +147,10 @@ export function Team({ data }: TeamProps) {
                       textShadow: "0 0 20px rgba(59,141,214,0.35), 0 0 40px rgba(59,141,214,0.15)",
                     }}
                   >
-                    {member.fields.firstName}
+                    {member.fields?.firstName}
                   </h3>
                   <p className="text-sm text-white/75 group-hover:text-white/90 transition-colors duration-300">
-                    {member.fields.jobTitle}
+                    {member.fields?.jobTitle}
                   </p>
                 </div>
               </div>

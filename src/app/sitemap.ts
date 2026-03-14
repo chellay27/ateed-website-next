@@ -52,12 +52,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogPages: MetadataRoute.Sitemap = [];
   try {
     const response = await getBlogPosts();
-    blogPages = response.items.map((post: any) => ({
-      url: `${baseUrl}/blog/${getSlug(post.fields.title)}`,
-      lastModified: new Date(post.sys.updatedAt),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    }));
+    blogPages = response.items
+      .filter((post: any) => post.fields?.title)
+      .map((post: any) => ({
+        url: `${baseUrl}/blog/${getSlug(post.fields.title)}`,
+        lastModified: new Date(post.sys.updatedAt),
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      }));
   } catch (error) {
     console.error("Error fetching blog posts for sitemap:", error);
   }

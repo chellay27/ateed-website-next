@@ -14,6 +14,8 @@
 
   --accent: #3B8DD6;
   --accent-hover: #2B6CB0;
+  --accent-orange: #E8762D;
+  --accent-orange-hover: #D06825;
 
   --border: #E7E5E4;
   --border-dark: #44403C;
@@ -32,6 +34,8 @@
 
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-orange-hover: var(--accent-orange-hover);
 
   --color-border: var(--border);
   --color-border-dark: var(--border-dark);

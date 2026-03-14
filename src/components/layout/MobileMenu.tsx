@@ -116,10 +116,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </ul>
 
         <div className="flex flex-col items-center gap-4 mt-10">
-          <Button href="/free-audit" variant="primary" onClick={onClose}>
+          <Button href="/free-audit" variant="secondary" onClick={onClose}>
             Free Audit
           </Button>
-          <Button href="/contact" variant="secondary" onClick={onClose} className="border-white text-white hover:bg-white hover:text-bg-dark">
+          <Button href="/contact" variant="primary" onClick={onClose}>
             Contact Us
           </Button>
         </div>

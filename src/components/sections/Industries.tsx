@@ -40,7 +40,7 @@ export function Industries({ data }: IndustriesProps) {
 
   // Staggered entrance animation
   useGSAP(() => {
-    if (!listRef.current) return;
+    if (!listRef.current || !data?.length) return;
     const cards = listRef.current.querySelectorAll(".industry-card");
     if (cards.length === 0) return;
 
@@ -63,10 +63,12 @@ export function Industries({ data }: IndustriesProps) {
   }, [data]);
 
   const getImageUrl = (industry: Industry) => {
-    const url = industry.fields.image?.fields?.file?.url;
+    const url = industry.fields?.image?.fields?.file?.url;
     if (!url) return null;
     return url.startsWith("//") ? `https:${url}` : url;
   };
+
+  if (!data || data.length === 0) return null;
 
   return (
     <section className="py-24 lg:py-32 bg-bg-blue">
@@ -116,7 +118,7 @@ export function Industries({ data }: IndustriesProps) {
                     {/* Heading + accent line wrapper */}
                     <div className="w-fit mb-4">
                       <h3 className="font-serif text-xl md:text-2xl font-normal text-text-primary transition-colors duration-300 group-hover:text-[var(--card-accent)]">
-                        {industry.fields.industryName}
+                        {industry.fields?.industryName}
                       </h3>
                       <div
                         className="w-8 h-[2px] rounded-full group-hover:w-full transition-all duration-500 mt-2"
@@ -125,7 +127,7 @@ export function Industries({ data }: IndustriesProps) {
                     </div>
 
                     <p className="text-text-secondary text-[0.925rem] leading-relaxed">
-                      {industry.fields.description}
+                      {industry.fields?.description}
                     </p>
                   </div>
 
@@ -134,7 +136,7 @@ export function Industries({ data }: IndustriesProps) {
                     {imageUrl ? (
                       <Image
                         src={imageUrl}
-                        alt={industry.fields.industryName || "Industry"}
+                        alt={industry.fields?.industryName || "Industry"}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 45vw"

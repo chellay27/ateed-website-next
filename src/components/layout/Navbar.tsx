@@ -94,14 +94,14 @@ export function Navbar() {
             <div className="flex items-center gap-4">
               <Button
                 href="/free-audit"
-                variant="primary"
+                variant="secondary"
                 className="hidden md:inline-flex text-xs px-5 py-2.5"
               >
                 Free Audit
               </Button>
               <Button
                 href="/contact"
-                variant="secondary"
+                variant="primary"
                 className="hidden md:inline-flex text-xs px-5 py-2.5"
               >
                 Contact Us

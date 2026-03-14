@@ -71,10 +71,10 @@ export function ContactInfo({ data }: ContactInfoProps) {
           }}
         >
           <p className="text-[10px] font-semibold text-text-tertiary uppercase tracking-[0.2em] mb-2">
-            {contact.fields.contactLabel}
+            {contact.fields?.contactLabel}
           </p>
           <p className="font-serif text-lg text-text-primary">
-            {formatContactValue(contact.fields.contactLabel, contact.fields.contactValue)}
+            {formatContactValue(contact.fields?.contactLabel, contact.fields?.contactValue)}
           </p>
         </div>
       ))}

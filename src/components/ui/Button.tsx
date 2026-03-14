@@ -17,7 +17,7 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary:
     "bg-accent text-white hover:bg-accent-hover",
   secondary:
-    "border border-text-primary text-text-primary hover:bg-text-primary hover:text-white",
+    "border border-accent-orange text-accent-orange hover:bg-accent-orange hover:text-white",
   ghost:
     "text-text-primary hover:text-accent",
 };

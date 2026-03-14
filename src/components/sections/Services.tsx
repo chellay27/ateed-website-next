@@ -17,6 +17,7 @@ const SERVICE_COLORS = [
   "#0D9488", // 07 API Integration — teal
   "#DB2777", // 08 AI/ML — pink
   "#E8762D", // 09 Digital Marketing — orange
+  "#6366F1", // 10 — slate indigo
 ];
 
 interface Service {
@@ -61,6 +62,8 @@ export function Services({ data }: ServicesProps) {
       }
     );
   }, [data]);
+
+  if (!data || data.length === 0) return null;
 
   return (
     <section ref={sectionRef} id="services" className="py-24 lg:py-32 bg-bg-primary">
@@ -108,7 +111,7 @@ export function Services({ data }: ServicesProps) {
                 <h3
                   className="font-serif heading-sm font-normal text-text-primary transition-colors duration-300 group-hover:text-[var(--card-accent)]"
                 >
-                  {service.fields.title}
+                  {service.fields?.title}
                 </h3>
                 <div
                   className="w-8 h-[2px] rounded-full group-hover:w-full transition-all duration-500 mt-2"
@@ -117,41 +120,22 @@ export function Services({ data }: ServicesProps) {
               </div>
 
               <p className="text-text-secondary text-[0.925rem] leading-relaxed">
-                {service.fields.cardText}
+                {service.fields?.cardText}
               </p>
             </div>
             );
           })}
-          {/* CTA in the empty cell when odd number of services */}
-          {data.length % 2 !== 0 && (
-            <div className="hidden md:flex p-6 lg:p-8 flex-col items-center justify-center text-center">
-              <p className="text-text-secondary mb-4">Have a project in mind?</p>
-              <Button variant="primary" href="/contact">
-                Let&apos;s Discuss Your Project
-              </Button>
-            </div>
-          )}
         </div>
 
-        {/* CTA below services on mobile (or when even number of services) */}
-        {data.length % 2 === 0 && (
-          <FadeIn delay={0.3}>
-            <div className="mt-14 text-center">
-              <p className="text-text-secondary mb-5">Have a project in mind?</p>
-              <Button variant="primary" href="/contact">
-                Let&apos;s Discuss Your Project
-              </Button>
-            </div>
-          </FadeIn>
-        )}
-        {data.length % 2 !== 0 && (
-          <div className="md:hidden mt-10 text-center">
-            <p className="text-text-secondary mb-4">Have a project in mind?</p>
+        {/* CTA always below the grid — stable regardless of service count */}
+        <FadeIn delay={0.3}>
+          <div className="mt-14 text-center">
+            <p className="text-text-secondary mb-5">Have a project in mind?</p>
             <Button variant="primary" href="/contact">
               Let&apos;s Discuss Your Project
             </Button>
           </div>
-        )}
+        </FadeIn>
       </div>
     </section>
   );

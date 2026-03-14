@@ -106,7 +106,7 @@ export function CoreValues({ data }: CoreValuesProps) {
                   <h3
                     className="font-serif heading-sm font-normal text-text-primary transition-colors duration-300 group-hover:text-[var(--card-accent)]"
                   >
-                    {value.fields.title}
+                    {value.fields?.title}
                   </h3>
                   <div
                     className="w-8 h-[2px] rounded-full group-hover:w-full transition-all duration-500 mt-2"
@@ -115,7 +115,7 @@ export function CoreValues({ data }: CoreValuesProps) {
                 </div>
 
                 <p className="text-text-secondary text-[0.925rem] leading-relaxed">
-                  {value.fields.description}
+                  {value.fields?.description}
                 </p>
               </div>
             );

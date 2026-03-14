@@ -7,6 +7,7 @@ import { ContactInfo } from "@/components/sections/ContactInfo";
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Get in touch with Ateed Tech. We'd love to hear about your project and discuss how we can help bring your vision to life.",
+  alternates: { canonical: "/contact" },
 };
 
 export const dynamic = "force-static";

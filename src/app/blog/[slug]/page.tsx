@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: postData.fields.title,
     description: postData.fields.excerpt,
+    alternates: { canonical: `/blog/${slug}` },
     openGraph: {
       title: postData.fields.title,
       description: postData.fields.excerpt,
@@ -166,6 +167,37 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 url: "https://www.ateedtech.com/logo.png",
               },
             },
+          }),
+        }}
+      />
+
+      {/* BreadcrumbList Schema for rich results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://www.ateedtech.com",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Blog",
+                item: "https://www.ateedtech.com/blog",
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: post.fields.title,
+                item: `https://www.ateedtech.com/blog/${slug}`,
+              },
+            ],
           }),
         }}
       />

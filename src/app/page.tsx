@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { getServices, getMission, getIndustries, getCaseStudies, getTechnologyStack, getHeroSection } from "@/lib/contentful";
 import { Hero } from "@/components/sections/Hero";
 import { Mission } from "@/components/sections/Mission";
@@ -6,6 +7,10 @@ import { Industries } from "@/components/sections/Industries";
 import { TechStack } from "@/components/sections/TechStack";
 import { CaseStudies } from "@/components/sections/CaseStudies";
 import { HomeCTA } from "@/components/sections/HomeCTA";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // Force static generation for optimal performance
 export const dynamic = "force-static";
@@ -66,6 +71,50 @@ export default async function HomePage() {
                 position: index + 1,
               })),
             },
+          }),
+        }}
+      />
+
+      {/* LocalBusiness Schema for local SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "@id": "https://www.ateedtech.com/#localbusiness",
+            name: "Ateed Tech",
+            url: "https://www.ateedtech.com",
+            logo: "https://www.ateedtech.com/logo.png",
+            image: "https://www.ateedtech.com/og-image.png",
+            description:
+              "Custom software development company specializing in web applications, mobile apps, enterprise software, and AI solutions.",
+            telephone: "+1-561-462-8333",
+            email: "sales@ateedtech.com",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Boynton Beach",
+              addressRegion: "FL",
+              postalCode: "33426",
+              addressCountry: "US",
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 26.5253,
+              longitude: -80.0664,
+            },
+            openingHoursSpecification: {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              opens: "09:00",
+              closes: "18:00",
+            },
+            sameAs: [
+              "https://www.facebook.com/AteedTech/",
+              "https://www.linkedin.com/company/ateedtech",
+              "https://www.youtube.com/@AteedTech",
+              "https://www.instagram.com/ateedtech/",
+            ],
           }),
         }}
       />

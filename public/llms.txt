@@ -3,6 +3,9 @@
 ## About
 Ateed Tech is a custom software development company based in Boynton Beach, Florida. We specialize in building web applications, mobile apps, enterprise software solutions, and AI-powered systems.
 
+## Free Tools
+- Free Website Audit: Instant performance, SEO, accessibility, and security analysis for any website at https://www.ateedtech.com/free-audit
+
 ## Services
 - Requirement Definition: Creating comprehensive requirement definitions for custom software development
 - Consulting and Prototyping: Aligning custom software vision with business goals

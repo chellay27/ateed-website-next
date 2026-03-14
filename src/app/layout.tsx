@@ -63,6 +63,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -72,6 +73,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="preconnect" href="https://images.ctfassets.net" />
+        <link rel="dns-prefetch" href="https://images.ctfassets.net" />
+      </head>
       <body className={`${inter.variable} ${newsreader.variable} font-sans antialiased bg-bg-primary text-text-primary`}>
         <Navbar />
         <main>{children}</main>

@@ -6,6 +6,7 @@ import { BLOCKS, INLINES, MARKS } from "@contentful/rich-text-types";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Read Ateed Tech's privacy policy to understand how we collect, use, and protect your personal information.",
+  alternates: { canonical: "/privacy-policy" },
 };
 
 export const dynamic = "force-static";

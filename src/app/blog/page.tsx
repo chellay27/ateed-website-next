@@ -8,6 +8,7 @@ import { BlogGrid } from "@/components/sections/BlogGrid";
 export const metadata: Metadata = {
   title: "Blog",
   description: "Read the latest insights, tutorials, and updates from Ateed Tech on software development, technology trends, and digital innovation.",
+  alternates: { canonical: "/blog" },
 };
 
 export const dynamic = "force-static";

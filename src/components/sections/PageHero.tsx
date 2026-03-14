@@ -10,9 +10,10 @@ interface PageHeroProps {
   heading: string;
   description?: string;
   backgroundImage?: string;
+  imageAlt?: string;
 }
 
-export function PageHero({ heading, description, backgroundImage }: PageHeroProps) {
+export function PageHero({ heading, description, backgroundImage, imageAlt }: PageHeroProps) {
   const heroRef = useRef<HTMLElement>(null);
   const orbsRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -142,7 +143,7 @@ export function PageHero({ heading, description, backgroundImage }: PageHeroProp
                 >
                   <Image
                     src={backgroundImage}
-                    alt=""
+                    alt={imageAlt || heading}
                     fill
                     priority
                     className="object-cover"

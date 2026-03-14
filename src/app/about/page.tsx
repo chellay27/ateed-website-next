@@ -8,6 +8,7 @@ import { CoreValues } from "@/components/sections/CoreValues";
 export const metadata: Metadata = {
   title: "About Us",
   description: "Learn about Ateed Tech - your dedicated technology partner committed to bringing your unique visions to life through custom software development.",
+  alternates: { canonical: "/about" },
 };
 
 export const dynamic = "force-static";

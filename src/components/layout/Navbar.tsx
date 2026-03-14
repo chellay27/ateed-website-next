@@ -12,7 +12,6 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact Us" },
 ];
 
 export function Navbar() {
@@ -94,11 +93,18 @@ export function Navbar() {
             {/* Right side: CTA + Mobile toggle */}
             <div className="flex items-center gap-4">
               <Button
-                href="/contact"
+                href="/free-audit"
                 variant="primary"
                 className="hidden md:inline-flex text-xs px-5 py-2.5"
               >
-                Let&apos;s Talk
+                Free Audit
+              </Button>
+              <Button
+                href="/contact"
+                variant="secondary"
+                className="hidden md:inline-flex text-xs px-5 py-2.5"
+              >
+                Contact Us
               </Button>
 
               {/* Mobile hamburger */}

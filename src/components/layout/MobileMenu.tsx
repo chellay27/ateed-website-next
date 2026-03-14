@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
+import { Button } from "@/components/ui/Button";
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact Us" },
 ];
 
 interface MobileMenuProps {
@@ -114,6 +114,15 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             </li>
           ))}
         </ul>
+
+        <div className="flex flex-col items-center gap-4 mt-10">
+          <Button href="/free-audit" variant="primary" onClick={onClose}>
+            Free Audit
+          </Button>
+          <Button href="/contact" variant="secondary" onClick={onClose} className="border-white text-white hover:bg-white hover:text-bg-dark">
+            Contact Us
+          </Button>
+        </div>
       </nav>
     </div>
   );

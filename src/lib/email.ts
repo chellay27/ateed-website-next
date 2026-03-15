@@ -75,6 +75,64 @@ export async function sendAuditNotification(
   });
 }
 
+export interface ChatContactData {
+  name: string;
+  email: string;
+  phone?: string;
+  note?: string;
+  conversationContext: string[];
+}
+
+export async function sendChatContactNotification(
+  data: ChatContactData
+): Promise<void> {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not configured — skipping chat contact email");
+    return;
+  }
+
+  const conversationHtml = data.conversationContext
+    .map((line) => `<div style="padding: 4px 0; border-bottom: 1px solid #f1f5f9;">${line}</div>`)
+    .join("");
+
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
+      <div style="background: linear-gradient(135deg, #1e3a5f, #3b8dd6); padding: 32px; border-radius: 12px 12px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">New Chat Lead</h1>
+        <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0;">Someone wants to connect via the chatbot</p>
+      </div>
+
+      <div style="background: #f8f9fa; padding: 24px; border: 1px solid #e2e8f0;">
+        <h2 style="margin: 0 0 16px; font-size: 18px; color: #1e3a5f;">Contact Information</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr><td style="padding: 6px 0; color: #64748b; width: 100px;">Name</td><td style="padding: 6px 0; font-weight: 600;">${data.name}</td></tr>
+          <tr><td style="padding: 6px 0; color: #64748b;">Email</td><td style="padding: 6px 0;"><a href="mailto:${data.email}" style="color: #3b8dd6;">${data.email}</a></td></tr>
+          ${data.phone ? `<tr><td style="padding: 6px 0; color: #64748b;">Phone</td><td style="padding: 6px 0;"><a href="tel:${data.phone}" style="color: #3b8dd6;">${data.phone}</a></td></tr>` : ""}
+          ${data.note ? `<tr><td style="padding: 6px 0; color: #64748b;">Note</td><td style="padding: 6px 0;">${data.note}</td></tr>` : ""}
+        </table>
+      </div>
+
+      <div style="padding: 24px; border: 1px solid #e2e8f0; border-top: none;">
+        <h2 style="margin: 0 0 16px; font-size: 18px; color: #1e3a5f;">Conversation Context</h2>
+        <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 14px; color: #475569;">
+          ${conversationHtml}
+        </div>
+      </div>
+
+      <div style="padding: 16px 24px; background: #f8f9fa; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; color: #64748b; font-size: 13px;">
+        Submitted at ${new Date().toLocaleString("en-US", { timeZone: "America/New_York" })} ET via chatbot
+      </div>
+    </div>
+  `;
+
+  await resend.emails.send({
+    from: "Ateed Tech Chat <chat@ateedtech.com>",
+    to: NOTIFICATION_EMAIL,
+    subject: `New Chat Lead: ${data.name}`,
+    html,
+  });
+}
+
 export async function sendAuditResultsToUser(
   contact: AuditRequest,
   results: AuditResult

@@ -281,8 +281,8 @@ export function Hero({ data }: HeroProps) {
                 <Button variant="primary" href="/contact">
                   Start a Conversation
                 </Button>
-                <Button variant="secondary" href="#services">
-                  Explore Services
+                <Button variant="ghost" href="#services">
+                  Explore Services <span aria-hidden="true">→</span>
                 </Button>
               </div>
             </FadeIn>

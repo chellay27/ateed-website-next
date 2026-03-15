@@ -92,17 +92,19 @@ export function Navbar() {
 
             {/* Right side: CTA + Mobile toggle */}
             <div className="flex items-center gap-4">
-              <Button
-                href="/free-audit"
-                variant="secondary"
-                className="hidden md:inline-flex text-xs px-5 py-2.5"
-              >
-                Free Audit
-              </Button>
+              <div className="hidden md:block">
+                <Button
+                  href="/free-audit"
+                  variant="secondary"
+                  className="text-xs px-5 py-2.5"
+                >
+                  Free Audit
+                </Button>
+              </div>
               <Button
                 href="/contact"
                 variant="primary"
-                className="hidden md:inline-flex text-xs px-5 py-2.5"
+                className="inline-flex text-xs px-5 py-2.5"
               >
                 Contact Us
               </Button>

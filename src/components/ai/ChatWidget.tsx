@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { ChatMessage } from "./ChatMessage";
+import { ChatContactForm } from "./ChatContactForm";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+  type?: "text" | "contact-form";
 }
 
 const SESSION_LIMIT = 20;
@@ -20,6 +22,9 @@ export function ChatWidget() {
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const formShownRef = useRef(false);
+  const formSubmittedRef = useRef(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,10 +35,10 @@ export function ChatWidget() {
   }, [messages, scrollToBottom]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if (isOpen && !isStreaming && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, isStreaming]);
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
   const isAtLimit = userMessageCount >= SESSION_LIMIT;
@@ -56,7 +61,12 @@ export function ChatWidget() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: updatedMessages.filter((m) => m.content !== GREETING),
+          messages: [
+            ...updatedMessages.filter((m) => m.content !== GREETING && m.type !== "contact-form"),
+            ...(formSubmittedRef.current
+              ? [{ role: "system" as const, content: "NOTE: The visitor has already submitted their contact details via the form. Do NOT ask them to fill in details again or mention the form. Just answer their question helpfully." }]
+              : []),
+          ],
         }),
       });
 
@@ -123,7 +133,71 @@ export function ChatWidget() {
       });
     } finally {
       setIsStreaming(false);
+
+      // After streaming completes, check if bot is offering to connect with Jack
+      if (!formShownRef.current) {
+        setMessages((prev) => {
+          const lastMsg = prev[prev.length - 1];
+          if (lastMsg?.role === "assistant" && shouldShowContactForm(lastMsg.content)) {
+            formShownRef.current = true;
+            return [...prev, { role: "assistant", content: "", type: "contact-form" as const }];
+          }
+          return prev;
+        });
+      }
     }
+  }
+
+  function buildProjectSummary(): string {
+    // Use only the last user message — it's the project-relevant one.
+    // Full conversation context is sent separately in the email.
+    const userMessages = messages.filter((m) => m.role === "user" && m.content);
+    return userMessages.length > 0 ? userMessages[userMessages.length - 1].content : "";
+  }
+
+  function shouldShowContactForm(text: string): boolean {
+    const lower = text.toLowerCase();
+    const mentionsJack = lower.includes("jack");
+    const mentionsHandoff =
+      lower.includes("connect") ||
+      lower.includes("reach out") ||
+      lower.includes("follow up") ||
+      lower.includes("get in touch") ||
+      lower.includes("fill in") ||
+      lower.includes("drop your") ||
+      lower.includes("details below") ||
+      lower.includes("info below") ||
+      lower.includes("your details");
+    return mentionsJack && mentionsHandoff;
+  }
+
+  async function handleContactSubmit(data: {
+    name: string;
+    email: string;
+    phone: string;
+    note: string;
+  }) {
+    // Build conversation context from all text messages
+    const conversation = messages
+      .filter((m) => m.type !== "contact-form" && m.content)
+      .map((m) => `${m.role === "user" ? "Visitor" : "Bot"}: ${m.content}`);
+
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...data,
+        conversation,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || "Failed to submit");
+    }
+
+    formSubmittedRef.current = true;
+    setFormSubmitted(true);
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -188,9 +262,13 @@ export function ChatWidget() {
 
           {/* Messages */}
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
-            {messages.map((msg, i) => (
-              <ChatMessage key={i} role={msg.role} content={msg.content} />
-            ))}
+            {messages.map((msg, i) =>
+              msg.type === "contact-form" ? (
+                <ChatContactForm key={i} initialNote={buildProjectSummary()} onSubmit={handleContactSubmit} />
+              ) : (
+                <ChatMessage key={i} role={msg.role} content={msg.content} />
+              )
+            )}
             {isStreaming && messages[messages.length - 1]?.content === "" && (
               <div className="flex justify-start">
                 <div className="flex gap-1 rounded-2xl rounded-bl-md bg-bg-cream px-4 py-3">
@@ -212,6 +290,10 @@ export function ChatWidget() {
                   +1-561-462-8333
                 </a>{" "}
                 or use our contact form.
+              </p>
+            ) : formShownRef.current && !formSubmitted ? (
+              <p className="text-center text-xs italic text-text-secondary">
+                Fill out the form above to continue chatting
               </p>
             ) : (
               <div className="flex items-center gap-2">

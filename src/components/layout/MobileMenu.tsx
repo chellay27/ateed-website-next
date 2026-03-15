@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { Button } from "@/components/ui/Button";
@@ -73,7 +74,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   return (
     <div
       ref={overlayRef}
-      className={`fixed inset-0 z-40 bg-bg-dark flex flex-col items-center justify-center transition-[visibility] ${
+      className={`fixed inset-0 z-[60] bg-bg-dark flex flex-col items-center justify-center transition-[visibility] ${
         isOpen ? "visible" : "invisible"
       }`}
       style={{ opacity: isOpen ? undefined : 0 }}
@@ -100,7 +101,16 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </svg>
       </button>
 
-      <nav aria-label="Mobile navigation">
+      <nav aria-label="Mobile navigation" className="flex flex-col items-center">
+        <Link href="/" onClick={onClose} className="mb-10">
+          <Image
+            src="/logo-with-name.png"
+            alt="Ateed Tech"
+            width={180}
+            height={36}
+            className="h-8 w-auto"
+          />
+        </Link>
         <ul ref={linksRef} className="flex flex-col items-center gap-8">
           {navLinks.map((link) => (
             <li key={link.href}>

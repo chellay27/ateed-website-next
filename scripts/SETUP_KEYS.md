@@ -9,7 +9,7 @@ This project uses several external APIs. Below are step-by-step instructions for
 Create a `.env.local` file in the project root with the following variables:
 
 ```env
-ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-proj-...
 GOOGLE_PSI_API_KEY=AIza...
 RESEND_API_KEY=re_...
 AUDIT_NOTIFICATION_EMAIL=sales@ateedtech.com
@@ -17,17 +17,17 @@ AUDIT_NOTIFICATION_EMAIL=sales@ateedtech.com
 
 ---
 
-## 1. `ANTHROPIC_API_KEY` — AI Chatbot
+## 1. `OPENAI_API_KEY` — AI Chatbot
 
 Used by the AI chat widget (`/api/chat`).
 
-1. Go to [console.anthropic.com](https://console.anthropic.com/)
+1. Go to [platform.openai.com](https://platform.openai.com/)
 2. Sign in or create an account
 3. Navigate to **API Keys** in the left sidebar
-4. Click **Create Key**, give it a name (e.g., "ateed-website")
-5. Copy the key — it starts with `sk-ant-`
+4. Click **Create new secret key**, give it a name (e.g., "ateed-website")
+5. Copy the key — it starts with `sk-proj-`
 
-**Pricing:** Pay-per-token. See [anthropic.com/pricing](https://www.anthropic.com/pricing).
+**Pricing:** Pay-per-token. See [openai.com/pricing](https://openai.com/pricing).
 
 ---
 

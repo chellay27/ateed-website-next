@@ -1,8 +1,9 @@
 "use client";
 
-interface ChatMessageProps {
+export interface ChatMessageProps {
   role: "user" | "assistant";
   content: string;
+  type?: "text" | "contact-form";
 }
 
 function formatContent(text: string): React.ReactNode[] {

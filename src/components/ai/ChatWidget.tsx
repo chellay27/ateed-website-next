@@ -12,6 +12,15 @@ interface Message {
 
 const SESSION_LIMIT = 20;
 const GREETING = "Hi! I'm Ateed Tech's AI assistant. How can I help you today?";
+const STORAGE_KEY = "ateed-chat";
+const SESSION_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+interface StoredSession {
+  messages: Message[];
+  formShown: boolean;
+  formSubmitted: boolean;
+  timestamp: number;
+}
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +34,7 @@ export function ChatWidget() {
   const formShownRef = useRef(false);
   const formSubmittedRef = useRef(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,6 +49,43 @@ export function ChatWidget() {
       inputRef.current.focus();
     }
   }, [isOpen, isStreaming]);
+
+  // Load chat session from localStorage on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const session: StoredSession = JSON.parse(raw);
+        if (Date.now() - session.timestamp < SESSION_TTL) {
+          setMessages(session.messages);
+          formShownRef.current = session.formShown;
+          formSubmittedRef.current = session.formSubmitted;
+          if (session.formSubmitted) setFormSubmitted(true);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      }
+    } catch {
+      // Ignore corrupt data
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Persist chat session to localStorage on changes
+  useEffect(() => {
+    if (!isHydrated) return;
+    try {
+      const session: StoredSession = {
+        messages,
+        formShown: formShownRef.current,
+        formSubmitted,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    } catch {
+      // Storage full or unavailable
+    }
+  }, [messages, formSubmitted, isHydrated]);
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
   const isAtLimit = userMessageCount >= SESSION_LIMIT;
@@ -200,6 +247,15 @@ export function ChatWidget() {
     setFormSubmitted(true);
   }
 
+  function clearConversation() {
+    localStorage.removeItem(STORAGE_KEY);
+    setMessages([{ role: "assistant", content: GREETING }]);
+    setInput("");
+    formShownRef.current = false;
+    formSubmittedRef.current = false;
+    setFormSubmitted(false);
+  }
+
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -239,6 +295,27 @@ export function ChatWidget() {
                 <p className="text-xs text-text-tertiary">Ateed Tech Assistant</p>
               </div>
             </div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={clearConversation}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-text-tertiary transition-colors hover:bg-bg-dark-secondary hover:text-white"
+                aria-label="New conversation"
+                title="New conversation"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="1 4 1 10 7 10" />
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                </svg>
+              </button>
             <button
               onClick={() => setIsOpen(false)}
               className="flex h-8 w-8 items-center justify-center rounded-full text-text-tertiary transition-colors hover:bg-bg-dark-secondary hover:text-white"
@@ -258,6 +335,7 @@ export function ChatWidget() {
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
+            </div>
           </div>
 
           {/* Messages */}

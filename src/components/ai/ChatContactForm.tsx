@@ -25,7 +25,7 @@ export function ChatContactForm({ initialNote = "", onSubmit }: ChatContactFormP
       <div className="flex justify-start animate-[fadeIn_0.2s_ease-out]">
         <div className="max-w-[85%] rounded-2xl rounded-bl-md bg-bg-cream px-4 py-3 text-sm leading-relaxed text-text-primary">
           <p className="font-semibold text-accent">Got it!</p>
-          <p className="mt-1">Jack will reach out to you shortly. Looking forward to connecting!</p>
+          <p className="mt-1">Jack, our founder, will reach out to you shortly. Looking forward to connecting!</p>
         </div>
       </div>
     );
@@ -51,7 +51,7 @@ export function ChatContactForm({ initialNote = "", onSubmit }: ChatContactFormP
     <div className="flex justify-start animate-[fadeIn_0.2s_ease-out]">
       <div className="w-full max-w-[85%] rounded-2xl rounded-bl-md bg-bg-cream px-4 py-3 text-sm">
         <p className="mb-3 font-medium text-text-primary">
-          Share your details and Jack will follow up:
+          Share your details and Jack, our founder, will follow up:
         </p>
         <form onSubmit={handleSubmit} className="space-y-2">
           <input

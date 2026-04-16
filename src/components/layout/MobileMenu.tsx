@@ -38,7 +38,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       tl.fromTo(
         overlayRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: "power2.out" }
+        { opacity: 1, duration: 0.3, ease: "power2.out" },
       ).fromTo(
         links,
         { opacity: 0, y: 30 },
@@ -49,7 +49,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           stagger: 0.08,
           ease: "power3.out",
         },
-        "-=0.1"
+        "-=0.1",
       );
     } else {
       document.body.style.overflow = "";
@@ -101,7 +101,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </svg>
       </button>
 
-      <nav aria-label="Mobile navigation" className="flex flex-col items-center">
+      <nav
+        aria-label="Mobile navigation"
+        className="flex flex-col items-center"
+      >
         <Link href="/" onClick={onClose} className="mb-10">
           <Image
             src="/logo-with-name.png"
@@ -126,9 +129,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </ul>
 
         <div className="flex flex-col items-center gap-4 mt-10">
-          <Button href="/free-audit" variant="secondary" onClick={onClose}>
+          {/* Temporarily hidden — restore when Google PageSpeed access returns */}
+          {/* <Button href="/free-audit" variant="secondary" onClick={onClose}>
             Free Audit
-          </Button>
+          </Button> */}
           <Button href="/contact" variant="primary" onClick={onClose}>
             Contact Us
           </Button>

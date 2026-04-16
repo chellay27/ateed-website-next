@@ -92,7 +92,8 @@ export function Navbar() {
 
             {/* Right side: CTA + Mobile toggle */}
             <div className="flex items-center gap-4">
-              <div className="hidden md:block">
+              {/* Temporarily hidden — restore when Google PageSpeed access returns */}
+              {/* <div className="hidden md:block">
                 <Button
                   href="/free-audit"
                   variant="secondary"
@@ -100,7 +101,7 @@ export function Navbar() {
                 >
                   Free Audit
                 </Button>
-              </div>
+              </div> */}
               <Button
                 href="/contact"
                 variant="primary"

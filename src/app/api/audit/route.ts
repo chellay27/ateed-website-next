@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   if (!checkRateLimit(ip)) {
     return NextResponse.json(
       { error: "Too many audit requests. Please try again in an hour." },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
@@ -64,17 +64,23 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid request body." },
+      { status: 400 },
+    );
   }
 
   // Validate
   const { url, name, email, phone, company } = body;
-  const strategy = (body as any).strategy === "desktop" ? "desktop" : "mobile";
+  const strategy =
+    (body as { strategy?: string }).strategy === "desktop"
+      ? "desktop"
+      : "mobile";
 
   if (!url || !name || !email) {
     return NextResponse.json(
       { error: "URL, name, and email are required." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -84,25 +90,27 @@ export async function POST(request: NextRequest) {
   if (!isValidUrl(normalizedUrl)) {
     return NextResponse.json(
       { error: "Please enter a valid website URL." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (!isValidEmail(email)) {
     return NextResponse.json(
       { error: "Please enter a valid email address." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   try {
     // Fetch PSI and security headers in parallel
     const psiApiKey = process.env.GOOGLE_PSI_API_KEY;
-    const psiUrl = new URL("https://www.googleapis.com/pagespeedonline/v5/runPagespeed");
+    const psiUrl = new URL(
+      "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
+    );
     psiUrl.searchParams.set("url", normalizedUrl);
     psiUrl.searchParams.set("strategy", strategy);
     ["PERFORMANCE", "ACCESSIBILITY", "BEST_PRACTICES", "SEO"].forEach((cat) =>
-      psiUrl.searchParams.append("category", cat)
+      psiUrl.searchParams.append("category", cat),
     );
     if (psiApiKey) {
       psiUrl.searchParams.set("key", psiApiKey);
@@ -121,8 +129,11 @@ export async function POST(request: NextRequest) {
     if (psiResponse.status === "rejected") {
       console.error("PSI fetch failed:", psiResponse.reason);
       return NextResponse.json(
-        { error: "Unable to analyze the website. Please check the URL and try again." },
-        { status: 502 }
+        {
+          error:
+            "Unable to analyze the website. Please check the URL and try again.",
+        },
+        { status: 502 },
       );
     }
 
@@ -131,8 +142,11 @@ export async function POST(request: NextRequest) {
       const errText = await psiRes.text();
       console.error("PSI API error:", psiRes.status, errText);
       return NextResponse.json(
-        { error: "Unable to analyze the website. The URL may be unreachable or blocked." },
-        { status: 502 }
+        {
+          error:
+            "Unable to analyze the website. The URL may be unreachable or blocked.",
+        },
+        { status: 502 },
       );
     }
 
@@ -149,7 +163,10 @@ export async function POST(request: NextRequest) {
     };
 
     if (securityResponse.status === "fulfilled" && securityResponse.value.ok) {
-      securityHeaders = checkSecurityHeaders(securityResponse.value.headers, normalizedUrl);
+      securityHeaders = checkSecurityHeaders(
+        securityResponse.value.headers,
+        normalizedUrl,
+      );
     }
 
     // Format results
@@ -158,10 +175,10 @@ export async function POST(request: NextRequest) {
     // Fire-and-forget: send email notifications (team + user) in parallel
     const contact = { url: normalizedUrl, name, email, phone, company };
     sendAuditNotification(contact, results).catch((err) =>
-      console.error("Failed to send team audit email:", err)
+      console.error("Failed to send team audit email:", err),
     );
     sendAuditResultsToUser(contact, results).catch((err) =>
-      console.error("Failed to send user audit email:", err)
+      console.error("Failed to send user audit email:", err),
     );
 
     return NextResponse.json(results);
@@ -169,7 +186,7 @@ export async function POST(request: NextRequest) {
     console.error("Audit API error:", error);
     return NextResponse.json(
       { error: "An unexpected error occurred. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

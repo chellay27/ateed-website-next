@@ -29,7 +29,12 @@ export function TextReveal({
   const words = useMemo(() => children.split(" "), [children]);
 
   return (
-    <Tag ref={ref as any} className={`word-reveal ${className}`}>
+    <Tag
+      // Polymorphic ref: TypeScript can't unify across the as-union; double-cast is the
+      // accepted escape hatch for polymorphic components.
+      ref={ref as unknown as React.Ref<HTMLHeadingElement>}
+      className={`word-reveal ${className}`}
+    >
       {words.map((word, i) => (
         <span key={i} className="inline-block overflow-hidden">
           <span className="word-inner inline-block">

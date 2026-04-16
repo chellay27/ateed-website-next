@@ -8,7 +8,7 @@ export interface ChatMessageProps {
 
 function formatContent(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = [];
-  let remaining = text;
+  const remaining = text;
   let key = 0;
 
   // Process code blocks first
@@ -19,7 +19,9 @@ function formatContent(text: string): React.ReactNode[] {
   while ((match = codeBlockRegex.exec(remaining)) !== null) {
     if (match.index > lastIndex) {
       parts.push(
-        <span key={key++}>{formatInline(remaining.slice(lastIndex, match.index))}</span>
+        <span key={key++}>
+          {formatInline(remaining.slice(lastIndex, match.index))}
+        </span>,
       );
     }
     parts.push(
@@ -28,13 +30,15 @@ function formatContent(text: string): React.ReactNode[] {
         className="my-2 overflow-x-auto rounded-lg bg-bg-dark p-3 text-sm text-white"
       >
         <code>{match[1]}</code>
-      </pre>
+      </pre>,
     );
     lastIndex = match.index + match[0].length;
   }
 
   if (lastIndex < remaining.length) {
-    parts.push(<span key={key++}>{formatInline(remaining.slice(lastIndex))}</span>);
+    parts.push(
+      <span key={key++}>{formatInline(remaining.slice(lastIndex))}</span>,
+    );
   }
 
   if (parts.length === 0) {
@@ -47,7 +51,8 @@ function formatContent(text: string): React.ReactNode[] {
 function formatInline(text: string): React.ReactNode[] {
   const parts: React.ReactNode[] = [];
   // Match bold, inline code, and links
-  const inlineRegex = /(\*\*(.+?)\*\*)|(`([^`]+?)`)|(\[([^\]]+?)\]\(([^)]+?)\))/g;
+  const inlineRegex =
+    /(\*\*(.+?)\*\*)|(`([^`]+?)`)|(\[([^\]]+?)\]\(([^)]+?)\))/g;
   let lastIndex = 0;
   let match;
   let key = 0;
@@ -68,7 +73,7 @@ function formatInline(text: string): React.ReactNode[] {
           className="rounded bg-bg-dark/10 px-1.5 py-0.5 text-sm font-mono"
         >
           {match[4]}
-        </code>
+        </code>,
       );
     } else if (match[5]) {
       // Link
@@ -81,7 +86,7 @@ function formatInline(text: string): React.ReactNode[] {
           className="text-accent underline hover:text-accent-hover"
         >
           {match[6]}
-        </a>
+        </a>,
       );
     }
 
@@ -109,7 +114,9 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
             : "bg-bg-cream text-text-primary rounded-bl-md"
         }`}
       >
-        <div className="whitespace-pre-wrap break-words">{formatContent(content)}</div>
+        <div className="whitespace-pre-wrap break-words">
+          {formatContent(content)}
+        </div>
       </div>
     </div>
   );

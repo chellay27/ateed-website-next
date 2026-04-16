@@ -52,10 +52,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogPages: MetadataRoute.Sitemap = [];
   try {
     const response = await getBlogPosts();
-    blogPages = response.items
-      .filter((post: any) => post.fields?.title)
-      .map((post: any) => ({
-        url: `${baseUrl}/blog/${getSlug(post.fields.title)}`,
+    const items = response.items as unknown as Array<{
+      fields?: { title?: string };
+      sys: { updatedAt: string };
+    }>;
+    blogPages = items
+      .filter((post) => post.fields?.title)
+      .map((post) => ({
+        url: `${baseUrl}/blog/${getSlug(post.fields!.title!)}`,
         lastModified: new Date(post.sys.updatedAt),
         changeFrequency: "monthly" as const,
         priority: 0.6,

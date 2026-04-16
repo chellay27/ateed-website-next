@@ -4,10 +4,18 @@ import { PageHero } from "@/components/sections/PageHero";
 import { FeaturedPost } from "@/components/sections/FeaturedPost";
 import { BlogCard } from "@/components/sections/BlogCard";
 import { BlogGrid } from "@/components/sections/BlogGrid";
+import type { Author, BlogPost, ContentfulEntry } from "@/types/contentful";
+
+interface BlogHeroFields {
+  heading?: string;
+  description?: string;
+  heroImage?: { fields?: { file?: { url?: string } } };
+}
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Read the latest insights, tutorials, and updates from Ateed Tech on software development, technology trends, and digital innovation.",
+  description:
+    "Read the latest insights, tutorials, and updates from Ateed Tech on software development, technology trends, and digital innovation.",
   alternates: { canonical: "/blog" },
 };
 
@@ -39,31 +47,38 @@ export default async function BlogPage() {
     getBlogPosts(),
   ]);
 
-  const hero = heroData[0] as any;
-  const heroImageUrl = hero?.fields?.heroImage?.fields?.file?.url as string | undefined;
-  const backgroundImage = heroImageUrl
-    ? getImageUrl(heroImageUrl)
-    : undefined;
+  const hero = heroData[0] as unknown as
+    | ContentfulEntry<BlogHeroFields>
+    | undefined;
+  const heroImageUrl = hero?.fields?.heroImage?.fields?.file?.url;
+  const backgroundImage = heroImageUrl ? getImageUrl(heroImageUrl) : undefined;
 
-  const posts = blogResponse.items;
+  const posts = blogResponse.items as unknown as BlogPost[];
   const includes = blogResponse.includes;
 
   // Find featured post
-  const featuredPost = posts.find((post: any) => post.fields.featured) as any;
-  const regularPosts = posts as any[];
+  const featuredPost = posts.find((post) => post.fields.featured);
+  const regularPosts = posts;
 
   // Helper to get author from includes
-  const getAuthor = (post: any): any => {
+  const getAuthor = (post: BlogPost): Author | null => {
     const authorId = post.fields.author?.sys?.id;
     if (!authorId || !includes?.Entry) return null;
-    return (includes.Entry as any[]).find((entry: any) => entry.sys.id === authorId);
+    return (
+      (includes.Entry as unknown as Author[]).find(
+        (entry) => entry.sys.id === authorId,
+      ) ?? null
+    );
   };
 
   return (
     <>
       <PageHero
         heading={hero?.fields?.heading || "Blog"}
-        description={hero?.fields?.description || "Latest stories and insights from Ateed Tech"}
+        description={
+          hero?.fields?.description ||
+          "Latest stories and insights from Ateed Tech"
+        }
         backgroundImage={backgroundImage}
       />
 
@@ -81,9 +96,15 @@ export default async function BlogPage() {
               {(() => {
                 const author = getAuthor(featuredPost);
                 const authorName = author?.fields?.name || "Anonymous";
-                const authorAvatar = getImageUrl(author?.fields?.profilePicture?.fields?.file?.url);
-                const imageUrl = getImageUrl(featuredPost.fields.heroImage?.fields?.file?.url);
-                const publishDate = formatDate(featuredPost.fields.publishDate || featuredPost.sys.createdAt);
+                const authorAvatar = getImageUrl(
+                  author?.fields?.profilePicture?.fields?.file?.url,
+                );
+                const imageUrl = getImageUrl(
+                  featuredPost.fields.heroImage?.fields?.file?.url,
+                );
+                const publishDate = formatDate(
+                  featuredPost.fields.publishDate || featuredPost.sys.createdAt,
+                );
 
                 return (
                   <FeaturedPost
@@ -113,12 +134,18 @@ export default async function BlogPage() {
             </h2>
 
             <BlogGrid>
-              {regularPosts.map((post: any) => {
+              {regularPosts.map((post) => {
                 const author = getAuthor(post);
                 const authorName = author?.fields?.name || "Anonymous";
-                const authorAvatar = getImageUrl(author?.fields?.profilePicture?.fields?.file?.url);
-                const imageUrl = getImageUrl(post.fields.heroImage?.fields?.file?.url);
-                const publishDate = formatDate(post.fields.publishDate || post.sys.createdAt);
+                const authorAvatar = getImageUrl(
+                  author?.fields?.profilePicture?.fields?.file?.url,
+                );
+                const imageUrl = getImageUrl(
+                  post.fields.heroImage?.fields?.file?.url,
+                );
+                const publishDate = formatDate(
+                  post.fields.publishDate || post.sys.createdAt,
+                );
 
                 return (
                   <BlogCard
@@ -138,7 +165,9 @@ export default async function BlogPage() {
 
             {posts.length === 0 && (
               <div className="text-center py-16">
-                <p className="text-text-tertiary text-lg">No blog posts found. Check back soon!</p>
+                <p className="text-text-tertiary text-lg">
+                  No blog posts found. Check back soon!
+                </p>
               </div>
             )}
           </div>

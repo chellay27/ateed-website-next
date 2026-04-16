@@ -29,7 +29,10 @@ export interface AuditResult {
   timestamp: string;
 }
 
-export function getRating(score: number): { rating: AuditCategoryResult["rating"]; color: string } {
+export function getRating(score: number): {
+  rating: AuditCategoryResult["rating"];
+  color: string;
+} {
   if (score >= 90) return { rating: "Excellent", color: "#22c55e" };
   if (score >= 70) return { rating: "Good", color: "#3b8dd6" };
   if (score >= 50) return { rating: "Needs Work", color: "#f59e0b" };
@@ -37,8 +40,9 @@ export function getRating(score: number): { rating: AuditCategoryResult["rating"
 }
 
 export function formatPSIResults(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   psiData: any,
-  securityHeaders: Record<string, boolean>
+  securityHeaders: Record<string, boolean>,
 ): AuditResult {
   const categories = psiData.lighthouseResult?.categories || {};
   const audits = psiData.lighthouseResult?.audits || {};
@@ -60,7 +64,7 @@ export function formatPSIResults(
   const secRating = getRating(combinedSecurityScore);
 
   const overallScore = Math.round(
-    (perfScore + seoScore + a11yScore + combinedSecurityScore) / 4
+    (perfScore + seoScore + a11yScore + combinedSecurityScore) / 4,
   );
 
   return {
@@ -86,10 +90,12 @@ export function formatPSIResults(
         ...seoRating,
         suggestions: getSEOSuggestions(audits, seoScore),
         metrics: {
-          "Meta Description": audits["meta-description"]?.score === 1 ? "Present" : "Missing",
-          "Document Title": audits["document-title"]?.score === 1 ? "Present" : "Missing",
+          "Meta Description":
+            audits["meta-description"]?.score === 1 ? "Present" : "Missing",
+          "Document Title":
+            audits["document-title"]?.score === 1 ? "Present" : "Missing",
           "Mobile Friendly": audits["viewport"]?.score === 1 ? "Yes" : "No",
-          "Crawlable": audits["is-crawlable"]?.score === 1 ? "Yes" : "No",
+          Crawlable: audits["is-crawlable"]?.score === 1 ? "Yes" : "No",
         },
       },
       accessibility: {
@@ -100,19 +106,26 @@ export function formatPSIResults(
         metrics: {
           "Accessibility Score": `${a11yScore}/100`,
           Viewport: audits["viewport"]?.score === 1 ? "Configured" : "Missing",
-          "Font Sizes": audits["font-size"]?.score === 1 ? "Readable" : "Too Small",
+          "Font Sizes":
+            audits["font-size"]?.score === 1 ? "Readable" : "Too Small",
         },
       },
       security: {
         name: "Security & Best Practices",
         score: combinedSecurityScore,
         ...secRating,
-        suggestions: getSecuritySuggestions(securityHeaders, audits, combinedSecurityScore),
+        suggestions: getSecuritySuggestions(
+          securityHeaders,
+          audits,
+          combinedSecurityScore,
+        ),
         metrics: {
           HTTPS: securityHeaders.https ? "Enabled" : "Missing",
           HSTS: securityHeaders.hsts ? "Enabled" : "Missing",
           CSP: securityHeaders.csp ? "Present" : "Missing",
-          "X-Frame-Options": securityHeaders.xFrameOptions ? "Present" : "Missing",
+          "X-Frame-Options": securityHeaders.xFrameOptions
+            ? "Present"
+            : "Missing",
         },
       },
     },
@@ -138,7 +151,10 @@ function calculateSecurityScore(headers: Record<string, boolean>): number {
   return score;
 }
 
-export function checkSecurityHeaders(headers: Headers, url: string): Record<string, boolean> {
+export function checkSecurityHeaders(
+  headers: Headers,
+  url: string,
+): Record<string, boolean> {
   return {
     https: url.startsWith("https://"),
     hsts: !!headers.get("strict-transport-security"),
@@ -149,90 +165,134 @@ export function checkSecurityHeaders(headers: Headers, url: string): Record<stri
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getPerformanceSuggestions(audits: any, score: number): string[] {
   const suggestions: string[] = [];
 
   if (audits["largest-contentful-paint"]?.numericValue > 2500) {
-    suggestions.push("Largest Contentful Paint is slow — optimize your hero images and above-the-fold content");
+    suggestions.push(
+      "Largest Contentful Paint is slow — optimize your hero images and above-the-fold content",
+    );
   }
   if (audits["total-blocking-time"]?.numericValue > 200) {
-    suggestions.push("High Total Blocking Time — reduce JavaScript execution and break up long tasks");
+    suggestions.push(
+      "High Total Blocking Time — reduce JavaScript execution and break up long tasks",
+    );
   }
   if (audits["cumulative-layout-shift"]?.numericValue > 0.1) {
-    suggestions.push("Layout shifts detected — set explicit dimensions on images and embeds");
+    suggestions.push(
+      "Layout shifts detected — set explicit dimensions on images and embeds",
+    );
   }
   if (audits["render-blocking-resources"]?.details?.items?.length > 0) {
-    suggestions.push("Render-blocking resources found — defer non-critical CSS and JavaScript");
+    suggestions.push(
+      "Render-blocking resources found — defer non-critical CSS and JavaScript",
+    );
   }
   if (audits["uses-optimized-images"]?.details?.items?.length > 0) {
-    suggestions.push("Images can be compressed further — use modern formats like WebP or AVIF");
+    suggestions.push(
+      "Images can be compressed further — use modern formats like WebP or AVIF",
+    );
   }
 
   if (suggestions.length === 0) {
-    suggestions.push(score >= 90
-      ? "Great performance! Your site loads quickly"
-      : "Consider auditing your JavaScript bundles and image sizes"
+    suggestions.push(
+      score >= 90
+        ? "Great performance! Your site loads quickly"
+        : "Consider auditing your JavaScript bundles and image sizes",
     );
   }
 
   return suggestions.slice(0, 5);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getSEOSuggestions(audits: any, score: number): string[] {
   const suggestions: string[] = [];
 
   if (audits["meta-description"]?.score !== 1) {
-    suggestions.push("Add a unique meta description to improve click-through rates from search results");
+    suggestions.push(
+      "Add a unique meta description to improve click-through rates from search results",
+    );
   }
   if (audits["document-title"]?.score !== 1) {
-    suggestions.push("Add a descriptive page title — this is the #1 on-page SEO factor");
+    suggestions.push(
+      "Add a descriptive page title — this is the #1 on-page SEO factor",
+    );
   }
   if (audits["link-text"]?.score !== 1) {
-    suggestions.push("Use descriptive link text instead of generic 'click here' or 'learn more'");
+    suggestions.push(
+      "Use descriptive link text instead of generic 'click here' or 'learn more'",
+    );
   }
   if (audits["is-crawlable"]?.score !== 1) {
-    suggestions.push("Page is blocked from crawling — check your robots.txt and meta robots tags");
+    suggestions.push(
+      "Page is blocked from crawling — check your robots.txt and meta robots tags",
+    );
   }
-  if (audits["hreflang"]?.score !== 1 && audits["hreflang"]?.score !== undefined) {
-    suggestions.push("Add hreflang tags if you serve content in multiple languages");
+  if (
+    audits["hreflang"]?.score !== 1 &&
+    audits["hreflang"]?.score !== undefined
+  ) {
+    suggestions.push(
+      "Add hreflang tags if you serve content in multiple languages",
+    );
   }
-  if (audits["structured-data"]?.score !== 1 && audits["structured-data"] !== undefined) {
-    suggestions.push("Add structured data (JSON-LD) to enhance search result appearance");
+  if (
+    audits["structured-data"]?.score !== 1 &&
+    audits["structured-data"] !== undefined
+  ) {
+    suggestions.push(
+      "Add structured data (JSON-LD) to enhance search result appearance",
+    );
   }
 
   if (suggestions.length === 0) {
-    suggestions.push(score >= 90
-      ? "Excellent SEO fundamentals! Keep your content fresh and relevant"
-      : "Review your on-page SEO factors for improvement opportunities"
+    suggestions.push(
+      score >= 90
+        ? "Excellent SEO fundamentals! Keep your content fresh and relevant"
+        : "Review your on-page SEO factors for improvement opportunities",
     );
   }
 
   return suggestions.slice(0, 5);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getAccessibilitySuggestions(audits: any, score: number): string[] {
   const suggestions: string[] = [];
 
   if (audits["color-contrast"]?.score !== 1) {
-    suggestions.push("Some text has insufficient color contrast — aim for WCAG AA (4.5:1 ratio)");
+    suggestions.push(
+      "Some text has insufficient color contrast — aim for WCAG AA (4.5:1 ratio)",
+    );
   }
   if (audits["image-alt"]?.score !== 1) {
-    suggestions.push("Add descriptive alt text to all images for screen reader users");
+    suggestions.push(
+      "Add descriptive alt text to all images for screen reader users",
+    );
   }
   if (audits["heading-order"]?.score !== 1) {
-    suggestions.push("Fix heading hierarchy — headings should follow a logical order (h1 → h2 → h3)");
+    suggestions.push(
+      "Fix heading hierarchy — headings should follow a logical order (h1 → h2 → h3)",
+    );
   }
   if (audits["tap-targets"]?.score !== 1) {
-    suggestions.push("Some tap targets are too small — ensure buttons and links are at least 48x48px");
+    suggestions.push(
+      "Some tap targets are too small — ensure buttons and links are at least 48x48px",
+    );
   }
   if (audits["font-size"]?.score !== 1) {
-    suggestions.push("Some text is too small to read comfortably on mobile devices");
+    suggestions.push(
+      "Some text is too small to read comfortably on mobile devices",
+    );
   }
 
   if (suggestions.length === 0) {
-    suggestions.push(score >= 90
-      ? "Strong accessibility! Your site is usable by a wide audience"
-      : "Run a manual accessibility audit to catch issues automated tools miss"
+    suggestions.push(
+      score >= 90
+        ? "Strong accessibility! Your site is usable by a wide audience"
+        : "Run a manual accessibility audit to catch issues automated tools miss",
     );
   }
 
@@ -241,37 +301,53 @@ function getAccessibilitySuggestions(audits: any, score: number): string[] {
 
 function getSecuritySuggestions(
   headers: Record<string, boolean>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   audits: any,
-  score: number
+  score: number,
 ): string[] {
   const suggestions: string[] = [];
 
   if (!headers.https) {
-    suggestions.push("Enable HTTPS — this is essential for security and SEO ranking");
+    suggestions.push(
+      "Enable HTTPS — this is essential for security and SEO ranking",
+    );
   }
   if (!headers.hsts) {
-    suggestions.push("Add Strict-Transport-Security header to enforce HTTPS connections");
+    suggestions.push(
+      "Add Strict-Transport-Security header to enforce HTTPS connections",
+    );
   }
   if (!headers.csp) {
-    suggestions.push("Implement Content-Security-Policy to prevent XSS and injection attacks");
+    suggestions.push(
+      "Implement Content-Security-Policy to prevent XSS and injection attacks",
+    );
   }
   if (!headers.xFrameOptions) {
-    suggestions.push("Add X-Frame-Options header to prevent clickjacking attacks");
+    suggestions.push(
+      "Add X-Frame-Options header to prevent clickjacking attacks",
+    );
   }
   if (!headers.xContentTypeOptions) {
-    suggestions.push("Add X-Content-Type-Options: nosniff to prevent MIME-type sniffing");
+    suggestions.push(
+      "Add X-Content-Type-Options: nosniff to prevent MIME-type sniffing",
+    );
   }
   if (!headers.referrerPolicy) {
-    suggestions.push("Set a Referrer-Policy header to control information leakage");
+    suggestions.push(
+      "Set a Referrer-Policy header to control information leakage",
+    );
   }
   if (audits["is-on-https"]?.score !== 1) {
-    suggestions.push("Some resources are loaded over insecure HTTP — migrate all assets to HTTPS");
+    suggestions.push(
+      "Some resources are loaded over insecure HTTP — migrate all assets to HTTPS",
+    );
   }
 
   if (suggestions.length === 0) {
-    suggestions.push(score >= 90
-      ? "Solid security posture! Keep headers and certificates up to date"
-      : "Review your server security headers for hardening opportunities"
+    suggestions.push(
+      score >= 90
+        ? "Solid security posture! Keep headers and certificates up to date"
+        : "Review your server security headers for hardening opportunities",
     );
   }
 

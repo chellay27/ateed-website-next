@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+// CommonJS script (run via `node scripts/generate-seo-assets.js`), not ESM.
 const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
@@ -30,7 +32,10 @@ async function generateAssets() {
   </svg>`;
 
   const logoBuf = await sharp(LOGO_PATH)
-    .resize(logoSize, logoSize, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize(logoSize, logoSize, {
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .png()
     .toBuffer();
 
@@ -49,7 +54,10 @@ async function generateAssets() {
   // 2. Favicon ICO (32x32 PNG wrapped in ICO container)
   console.log("Generating favicon...");
   const favicon32 = await sharp(LOGO_PATH)
-    .resize(32, 32, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize(32, 32, {
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .png()
     .toBuffer();
 
@@ -60,31 +68,37 @@ async function generateAssets() {
   icoHeader.writeUInt16LE(1, 4); // Image count
 
   const icoEntry = Buffer.alloc(16);
-  icoEntry.writeUInt8(32, 0);                       // Width
-  icoEntry.writeUInt8(32, 1);                       // Height
-  icoEntry.writeUInt8(0, 2);                        // Color palette
-  icoEntry.writeUInt8(0, 3);                        // Reserved
-  icoEntry.writeUInt16LE(1, 4);                     // Color planes
-  icoEntry.writeUInt16LE(32, 6);                    // Bits per pixel
-  icoEntry.writeUInt32LE(favicon32.length, 8);      // PNG data size
-  icoEntry.writeUInt32LE(22, 12);                   // Offset (6 + 16)
+  icoEntry.writeUInt8(32, 0); // Width
+  icoEntry.writeUInt8(32, 1); // Height
+  icoEntry.writeUInt8(0, 2); // Color palette
+  icoEntry.writeUInt8(0, 3); // Reserved
+  icoEntry.writeUInt16LE(1, 4); // Color planes
+  icoEntry.writeUInt16LE(32, 6); // Bits per pixel
+  icoEntry.writeUInt32LE(favicon32.length, 8); // PNG data size
+  icoEntry.writeUInt32LE(22, 12); // Offset (6 + 16)
 
   fs.writeFileSync(
     path.join(APP_DIR, "favicon.ico"),
-    Buffer.concat([icoHeader, icoEntry, favicon32])
+    Buffer.concat([icoHeader, icoEntry, favicon32]),
   );
   console.log("  ok src/app/favicon.ico");
 
   // 3. App icon (192x192) — transparent background
   await sharp(LOGO_PATH)
-    .resize(192, 192, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize(192, 192, {
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .png()
     .toFile(path.join(APP_DIR, "icon.png"));
   console.log("  ok src/app/icon.png");
 
   // 4. Apple touch icon (180x180) — white background
   await sharp(LOGO_PATH)
-    .resize(180, 180, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 1 } })
+    .resize(180, 180, {
+      fit: "contain",
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
+    })
     .flatten({ background: { r: 255, g: 255, b: 255 } })
     .png()
     .toFile(path.join(APP_DIR, "apple-icon.png"));
@@ -92,14 +106,20 @@ async function generateAssets() {
 
   // 5. Manifest icon 192x192
   await sharp(LOGO_PATH)
-    .resize(192, 192, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize(192, 192, {
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .png()
     .toFile(path.join(PUBLIC_DIR, "icon-192.png"));
   console.log("  ok public/icon-192.png");
 
   // 6. Manifest icon 512x512
   await sharp(LOGO_PATH)
-    .resize(512, 512, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize(512, 512, {
+      fit: "contain",
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .png()
     .toFile(path.join(PUBLIC_DIR, "icon-512.png"));
   console.log("  ok public/icon-512.png");

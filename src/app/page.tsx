@@ -1,5 +1,12 @@
 import { Metadata } from "next";
-import { getServices, getMission, getIndustries, getCaseStudies, getTechnologyStack, getHeroSection } from "@/lib/contentful";
+import {
+  getServices,
+  getMission,
+  getIndustries,
+  getCaseStudies,
+  getTechnologyStack,
+  getHeroSection,
+} from "@/lib/contentful";
 import { Hero } from "@/components/sections/Hero";
 import { Mission } from "@/components/sections/Mission";
 import { Services } from "@/components/sections/Services";
@@ -18,14 +25,15 @@ export const revalidate = 3600; // Revalidate every hour
 
 export default async function HomePage() {
   // Fetch all data in parallel for faster loading
-  const [heroSection, mission, services, industries, caseStudies, techStack] = await Promise.all([
-    getHeroSection("Home"),
-    getMission("Home"),
-    getServices(),
-    getIndustries(),
-    getCaseStudies(),
-    getTechnologyStack(),
-  ]);
+  const [heroSection, mission, services, industries, caseStudies, techStack] =
+    await Promise.all([
+      getHeroSection("Home"),
+      getMission("Home"),
+      getServices(),
+      getIndustries(),
+      getCaseStudies(),
+      getTechnologyStack(),
+    ]);
 
   return (
     <>
@@ -61,15 +69,20 @@ export default async function HomePage() {
             hasOfferCatalog: {
               "@type": "OfferCatalog",
               name: "Software Development Services",
-              itemListElement: services?.map((service: any, index: number) => ({
-                "@type": "Offer",
-                itemOffered: {
-                  "@type": "Service",
-                  name: service.fields?.title ?? "",
-                  description: service.fields?.cardText ?? "",
-                },
-                position: index + 1,
-              })) ?? [],
+              itemListElement:
+                (
+                  services as unknown as Array<{
+                    fields?: { title?: string; cardText?: string };
+                  }>
+                )?.map((service, index: number) => ({
+                  "@type": "Offer",
+                  itemOffered: {
+                    "@type": "Service",
+                    name: service.fields?.title ?? "",
+                    description: service.fields?.cardText ?? "",
+                  },
+                  position: index + 1,
+                })) ?? [],
             },
           }),
         }}
@@ -105,7 +118,13 @@ export default async function HomePage() {
             },
             openingHoursSpecification: {
               "@type": "OpeningHoursSpecification",
-              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              dayOfWeek: [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+              ],
               opens: "09:00",
               closes: "18:00",
             },

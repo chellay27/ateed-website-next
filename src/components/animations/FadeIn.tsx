@@ -31,7 +31,7 @@ export function FadeIn({
 
   useFadeIn(ref, { y, x, duration, delay, direction });
 
-  const Tag = Component as any;
+  const Tag = Component as React.ElementType;
 
   return (
     <Tag ref={ref} className={className}>

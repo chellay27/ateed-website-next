@@ -3,8 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/contentful";
-import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import {
+  documentToHtmlString,
+  type Options,
+} from "@contentful/rich-text-html-renderer";
 import { BLOCKS, INLINES, MARKS } from "@contentful/rich-text-types";
+import type { Author, BlogPost } from "@/types/contentful";
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
@@ -12,13 +16,19 @@ export const revalidate = 3600;
 // Generate static params for all blog posts
 export async function generateStaticParams() {
   const response = await getBlogPosts();
-  return response.items.map((post: any) => ({
-    slug: encodeURIComponent(post.fields.title.trim().toLowerCase().replace(/\s+/g, "-")),
+  return (response.items as unknown as BlogPost[]).map((post) => ({
+    slug: encodeURIComponent(
+      post.fields.title.trim().toLowerCase().replace(/\s+/g, "-"),
+    ),
   }));
 }
 
 // Generate metadata for each blog post
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const { post } = await getBlogPostBySlug(slug);
 
@@ -26,9 +36,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: "Post Not Found" };
   }
 
-  const postData = post as any;
+  const postData = post as unknown as BlogPost;
   const imageUrl = postData.fields.heroImage?.fields?.file?.url;
-  const ogImage = imageUrl ? (imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl) : undefined;
+  const ogImage = imageUrl
+    ? imageUrl.startsWith("//")
+      ? `https:${imageUrl}`
+      : imageUrl
+    : undefined;
 
   return {
     title: postData.fields.title,
@@ -44,32 +58,56 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 // Rich text rendering options
-const richTextOptions = {
+const richTextOptions: Options = {
   renderMark: {
-    [MARKS.BOLD]: (text: any) => `<strong>${text}</strong>`,
-    [MARKS.ITALIC]: (text: any) => `<em>${text}</em>`,
-    [MARKS.UNDERLINE]: (text: any) => `<u>${text}</u>`,
-    [MARKS.CODE]: (text: any) => `<code class="bg-[#F5F0EB] px-1 rounded">${text}</code>`,
+    [MARKS.BOLD]: (text) => `<strong>${text}</strong>`,
+    [MARKS.ITALIC]: (text) => `<em>${text}</em>`,
+    [MARKS.UNDERLINE]: (text) => `<u>${text}</u>`,
+    [MARKS.CODE]: (text) =>
+      `<code class="bg-[#F5F0EB] px-1 rounded">${text}</code>`,
   },
   renderNode: {
-    [BLOCKS.PARAGRAPH]: (node: any, next: any) => `<p class="mb-6 text-[#78716C] leading-relaxed">${next(node.content)}</p>`,
-    [BLOCKS.HEADING_1]: (node: any, next: any) => `<h1 class="font-serif text-4xl font-normal mb-6 mt-8 text-[#1C1917]">${next(node.content)}</h1>`,
-    [BLOCKS.HEADING_2]: (node: any, next: any) => `<h2 class="font-serif text-3xl font-normal mb-4 mt-8 text-[#1C1917]">${next(node.content)}</h2>`,
-    [BLOCKS.HEADING_3]: (node: any, next: any) => `<h3 class="font-serif text-2xl font-normal mb-4 mt-6 text-[#1C1917]">${next(node.content)}</h3>`,
-    [BLOCKS.HEADING_4]: (node: any, next: any) => `<h4 class="font-serif text-xl font-normal mb-3 mt-4 text-[#1C1917]">${next(node.content)}</h4>`,
-    [BLOCKS.HEADING_5]: (node: any, next: any) => `<h5 class="font-serif text-lg font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h5>`,
-    [BLOCKS.HEADING_6]: (node: any, next: any) => `<h6 class="font-serif text-base font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h6>`,
-    [BLOCKS.UL_LIST]: (node: any, next: any) => `<ul class="list-disc pl-6 mb-6 space-y-1.5">${next(node.content)}</ul>`,
-    [BLOCKS.OL_LIST]: (node: any, next: any) => `<ol class="list-decimal pl-6 mb-6 space-y-1.5">${next(node.content)}</ol>`,
-    [BLOCKS.LIST_ITEM]: (node: any, next: any) => `<li class="text-[#78716C] leading-relaxed">${next(node.content)}</li>`,
-    [BLOCKS.QUOTE]: (node: any, next: any) =>
+    [BLOCKS.PARAGRAPH]: (node, next) =>
+      `<p class="mb-6 text-[#78716C] leading-relaxed">${next(node.content)}</p>`,
+    [BLOCKS.HEADING_1]: (node, next) =>
+      `<h1 class="font-serif text-4xl font-normal mb-6 mt-8 text-[#1C1917]">${next(node.content)}</h1>`,
+    [BLOCKS.HEADING_2]: (node, next) =>
+      `<h2 class="font-serif text-3xl font-normal mb-4 mt-8 text-[#1C1917]">${next(node.content)}</h2>`,
+    [BLOCKS.HEADING_3]: (node, next) =>
+      `<h3 class="font-serif text-2xl font-normal mb-4 mt-6 text-[#1C1917]">${next(node.content)}</h3>`,
+    [BLOCKS.HEADING_4]: (node, next) =>
+      `<h4 class="font-serif text-xl font-normal mb-3 mt-4 text-[#1C1917]">${next(node.content)}</h4>`,
+    [BLOCKS.HEADING_5]: (node, next) =>
+      `<h5 class="font-serif text-lg font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h5>`,
+    [BLOCKS.HEADING_6]: (node, next) =>
+      `<h6 class="font-serif text-base font-normal mb-2 mt-4 text-[#1C1917]">${next(node.content)}</h6>`,
+    [BLOCKS.UL_LIST]: (node, next) =>
+      `<ul class="list-disc pl-6 mb-6 space-y-1.5">${next(node.content)}</ul>`,
+    [BLOCKS.OL_LIST]: (node, next) =>
+      `<ol class="list-decimal pl-6 mb-6 space-y-1.5">${next(node.content)}</ol>`,
+    [BLOCKS.LIST_ITEM]: (node, next) =>
+      `<li class="text-[#78716C] leading-relaxed">${next(node.content)}</li>`,
+    [BLOCKS.QUOTE]: (node, next) =>
       `<blockquote class="border-l-4 border-[#3B8DD6] pl-6 py-2 my-6 italic text-[#78716C]">${next(node.content)}</blockquote>`,
     [BLOCKS.HR]: () => `<hr class="my-8 border-[#E7E5E4]" />`,
-    [BLOCKS.EMBEDDED_ASSET]: (node: any) => {
-      const { title, description, file } = node.data?.target?.fields || {};
+    [BLOCKS.EMBEDDED_ASSET]: (node) => {
+      const target = (
+        node.data as {
+          target?: {
+            fields?: {
+              title?: string;
+              description?: string;
+              file?: { url?: string };
+            };
+          };
+        }
+      )?.target;
+      const { title, description, file } = target?.fields || {};
       const imageUrl = file?.url;
       if (!imageUrl) return "";
-      const fullUrl = imageUrl.startsWith("//") ? `https:${imageUrl}` : imageUrl;
+      const fullUrl = imageUrl.startsWith("//")
+        ? `https:${imageUrl}`
+        : imageUrl;
       return `
         <figure class="my-8">
           <img src="${fullUrl}" alt="${description || title || "Blog image"}" class="rounded-lg w-full" />
@@ -77,8 +115,8 @@ const richTextOptions = {
         </figure>
       `;
     },
-    [INLINES.HYPERLINK]: (node: any, next: any) => {
-      const href = node.data.uri;
+    [INLINES.HYPERLINK]: (node, next) => {
+      const href = (node.data as { uri?: string }).uri ?? "";
       return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-[#3B8DD6] hover:text-[#2B6CB0] hover:underline">${next(node.content)}</a>`;
     },
   },
@@ -103,7 +141,11 @@ function getSlug(title: string) {
   return encodeURIComponent(title.trim().toLowerCase().replace(/\s+/g, "-"));
 }
 
-export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const { post: rawPost, includes } = await getBlogPostBySlug(slug);
 
@@ -111,17 +153,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
-  const post = rawPost as any;
+  const post = rawPost as unknown as BlogPost;
 
   // Get author from includes
   const authorId = post.fields.author?.sys?.id;
-  const author = authorId && includes?.Entry
-    ? (includes.Entry as any[]).find((entry: any) => entry.sys.id === authorId)
-    : null;
+  const author =
+    authorId && includes?.Entry
+      ? (includes.Entry as unknown as Author[]).find(
+          (entry) => entry.sys.id === authorId,
+        )
+      : null;
 
   const authorName = author?.fields?.name || "Anonymous";
   const authorTitle = author?.fields?.jobTitle || "Author";
-  const authorAvatar = getImageUrl(author?.fields?.profilePicture?.fields?.file?.url);
+  const authorAvatar = getImageUrl(
+    author?.fields?.profilePicture?.fields?.file?.url,
+  );
   const linkedInLink = author?.fields?.linkedInLink;
 
   const heroImageUrl = getImageUrl(post.fields.heroImage?.fields?.file?.url);
@@ -137,8 +184,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   // Get related posts
   const allPostsResponse = await getBlogPosts({ limit: 4 });
-  const relatedPosts = allPostsResponse.items
-    .filter((p: any) => p.sys.id !== post.sys.id)
+  const relatedPosts = (allPostsResponse.items as unknown as BlogPost[])
+    .filter((p) => p.sys.id !== post.sys.id)
     .slice(0, 3);
 
   return (
@@ -242,12 +289,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                       {authorName}
                     </a>
                   ) : (
-                    <span className="font-semibold text-text-primary">{authorName}</span>
+                    <span className="font-semibold text-text-primary">
+                      {authorName}
+                    </span>
                   )}
                   {linkedInLink && (
-                    <a href={linkedInLink} target="_blank" rel="noopener noreferrer">
-                      <svg className="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    <a
+                      href={linkedInLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <svg
+                        className="w-4 h-4 text-accent"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                       </svg>
                     </a>
                   )}
@@ -265,8 +322,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 rel="noopener noreferrer"
                 className="text-text-tertiary hover:text-accent"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
                 </svg>
               </a>
               <a
@@ -275,8 +336,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 rel="noopener noreferrer"
                 className="text-text-tertiary hover:text-accent"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
               </a>
               <a
@@ -285,8 +350,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 rel="noopener noreferrer"
                 className="text-text-tertiary hover:text-accent"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                 </svg>
               </a>
             </div>
@@ -327,17 +396,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   More to Read
                 </span>
               </div>
-              <h2 className="font-serif heading-md font-normal text-text-primary mb-10">Latest Stories</h2>
+              <h2 className="font-serif heading-md font-normal text-text-primary mb-10">
+                Latest Stories
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {relatedPosts.map((relatedPost: any) => {
+                {relatedPosts.map((relatedPost) => {
                   const relatedAuthorId = relatedPost.fields.author?.sys?.id;
-                  const relatedAuthor = relatedAuthorId && allPostsResponse.includes?.Entry
-                    ? (allPostsResponse.includes.Entry as any[]).find((entry: any) => entry.sys.id === relatedAuthorId)
-                    : null;
-                  const relatedAuthorName = relatedAuthor?.fields?.name || "Anonymous";
-                  const relatedAuthorAvatar = getImageUrl(relatedAuthor?.fields?.profilePicture?.fields?.file?.url as string | undefined);
-                  const relatedImageUrl = getImageUrl(relatedPost.fields.heroImage?.fields?.file?.url);
-                  const relatedDate = formatDate(relatedPost.fields.publishDate || relatedPost.sys.createdAt);
+                  const relatedAuthor =
+                    relatedAuthorId && allPostsResponse.includes?.Entry
+                      ? (
+                          allPostsResponse.includes.Entry as unknown as Author[]
+                        ).find((entry) => entry.sys.id === relatedAuthorId)
+                      : null;
+                  const relatedAuthorName =
+                    relatedAuthor?.fields?.name || "Anonymous";
+                  const relatedAuthorAvatar = getImageUrl(
+                    relatedAuthor?.fields?.profilePicture?.fields?.file?.url,
+                  );
+                  const relatedImageUrl = getImageUrl(
+                    relatedPost.fields.heroImage?.fields?.file?.url,
+                  );
+                  const relatedDate = formatDate(
+                    relatedPost.fields.publishDate || relatedPost.sys.createdAt,
+                  );
 
                   return (
                     <article
@@ -348,11 +429,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         backdropFilter: "blur(12px)",
                         WebkitBackdropFilter: "blur(12px)",
                         border: "1px solid rgba(59,141,214,0.08)",
-                        boxShadow: "0 4px 24px rgba(30,80,160,0.06), 0 1px 3px rgba(0,0,0,0.03)",
+                        boxShadow:
+                          "0 4px 24px rgba(30,80,160,0.06), 0 1px 3px rgba(0,0,0,0.03)",
                       }}
                     >
                       {relatedImageUrl && (
-                        <Link href={`/blog/${getSlug(relatedPost.fields.title)}`} className="relative h-48 block overflow-hidden">
+                        <Link
+                          href={`/blog/${getSlug(relatedPost.fields.title)}`}
+                          className="relative h-48 block overflow-hidden"
+                        >
                           <Image
                             src={relatedImageUrl}
                             alt={relatedPost.fields.title}
@@ -362,7 +447,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                         </Link>
                       )}
                       <div className="p-6">
-                        <Link href={`/blog/${getSlug(relatedPost.fields.title)}`}>
+                        <Link
+                          href={`/blog/${getSlug(relatedPost.fields.title)}`}
+                        >
                           <h3 className="font-serif font-normal text-text-primary mb-2 hover:text-accent transition-colors duration-300 line-clamp-2">
                             {relatedPost.fields.title}
                           </h3>
@@ -382,9 +469,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                                 />
                               </div>
                             )}
-                            <span className="font-medium text-text-primary">{relatedAuthorName}</span>
+                            <span className="font-medium text-text-primary">
+                              {relatedAuthorName}
+                            </span>
                           </div>
-                          <time className="text-text-tertiary">{relatedDate}</time>
+                          <time className="text-text-tertiary">
+                            {relatedDate}
+                          </time>
                         </div>
                       </div>
                     </article>

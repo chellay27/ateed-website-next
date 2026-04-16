@@ -36,6 +36,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# sst / opennext
+.sst
+.open-next
+.sst-secrets.tmp.env
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

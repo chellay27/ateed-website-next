@@ -31,7 +31,7 @@ export function HomeCTA() {
           </FadeIn>
 
           <FadeIn delay={0.5}>
-            <Button variant="primary" href="/contact">
+            <Button variant="secondary" href="/contact">
               Start a Conversation
             </Button>
           </FadeIn>

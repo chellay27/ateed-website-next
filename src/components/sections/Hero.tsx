@@ -278,7 +278,7 @@ export function Hero({ data }: HeroProps) {
 
             <FadeIn delay={0.8}>
               <div className="flex flex-wrap gap-4">
-                <Button variant="primary" href="/contact">
+                <Button variant="secondary" href="/contact">
                   Start a Conversation
                 </Button>
                 <Button variant="ghost" href="#services">
@@ -653,7 +653,7 @@ export function Hero({ data }: HeroProps) {
                   <span style={{ color: "#34D399" }}>deploy</span>
                   <span style={{ color: "#78716C" }}>();</span>
                   <br />
-                  <span style={{ color: "#78716C" }}>// </span>
+                  <span style={{ color: "#78716C" }}>{"// "}</span>
                   <span style={{ color: "#4ADE80" }}>Ready</span>
                 </div>
               </div>
